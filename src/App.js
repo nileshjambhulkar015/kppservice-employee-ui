@@ -1,11 +1,11 @@
 import React from "react";
-import {Route, BrowserRouter as Router, Link, Switch} from 'react-router-dom';
+import {Route, BrowserRouter, Link, Routes} from 'react-router-dom';
 import EmployeeKppComponent from "./components/EmployeeKppsComponent/EmployeeKppComponent";
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import UpdateHodProfileComponent from "./components/UpdateHodProfileComponent/UpdateHodProfileComponent";
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
     <nav className="navbar navbar-inverse">
       <div className="container-fluid">
         <div className="navbar-header">
@@ -24,14 +24,14 @@ function App() {
         </ul>
       </div>
     </nav>
-    <Switch>
+    <Routes>
       
    
-      <Route exact path="/employeekpp" component={EmployeeKppComponent}></Route>
-      <Route exact path="/updateHodProfile" component={UpdateHodProfileComponent}></Route>
-        <Route exact path="/changePassword" component={ChangePasswordComponent}></Route>
-    </Switch>
-  </Router>    
+      <Route exact path="/employeekpp" element={<EmployeeKppComponent />}></Route>
+      <Route exact path="/updateHodProfile" element={<UpdateHodProfileComponent />}></Route>
+        <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
+    </Routes>
+  </BrowserRouter>    
   );
 }
 
