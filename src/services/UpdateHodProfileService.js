@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 const BASE_URL = "http://localhost:9091/employee";
 
@@ -11,7 +12,7 @@ class UpdateHodProfileService{
 
     getEmployeeById(empId) {
         console.log(empId)
-        return axios.get(BASE_URL + '/' + 1)
+        return axios.get(BASE_URL + '/' +  Cookies.get('empId'))
     }
 
     updateEmployeeDetails(employee) {

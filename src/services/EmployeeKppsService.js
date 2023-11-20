@@ -1,6 +1,7 @@
 import axios from "axios";
+import Cookies from 'js-cookie';
 
-const BASE_URL="http://localhost:9091/hod-approval/employee-kpp?empId=1&statusCd=A";
+const BASE_URL=`http://localhost:9091/hod-approval/employee-kpp?empId=${Cookies.get('empId')}&statusCd=A`;
 
 class EmployeeKppsService{
 

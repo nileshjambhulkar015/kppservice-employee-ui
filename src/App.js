@@ -3,6 +3,7 @@ import {Route, BrowserRouter, Link, Routes} from 'react-router-dom';
 import EmployeeKppComponent from "./components/EmployeeKppsComponent/EmployeeKppComponent";
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import UpdateHodProfileComponent from "./components/UpdateHodProfileComponent/UpdateHodProfileComponent";
+import Cookies from 'js-cookie';
 function App() {
   return (
     <BrowserRouter>
@@ -19,7 +20,7 @@ function App() {
             <li><Link to="/changePassword">Change Password</Link></li>          
         </ul>
         <ul className="nav navbar-nav navbar-right">
-          <li><a href="#"><span className="glyphicon glyphicon-user"></span> e1234</a></li>
+        <li><a href="#">Welcome: {Cookies.get('empEId')}</a></li>
           <li><a href="http://localhost:3008">Logout</a></li>
         </ul>
       </div>
