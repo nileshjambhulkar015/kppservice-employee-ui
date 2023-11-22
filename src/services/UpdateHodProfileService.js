@@ -3,21 +3,34 @@ import Cookies from 'js-cookie';
 
 const BASE_URL = "http://localhost:9091/employee";
 
-class UpdateHodProfileService{
+class UpdateHodProfileService {
 
-  
-    getKPPDetails(){
-        return axios.get(BASE_URL)
+    getKPPDetails() {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL)
+        } else {
+            alert("You need to login first")
+            window.location.replace("http://localhost:3008/");
+        }
     }
 
     getEmployeeById(empId) {
-        console.log(empId)
-        return axios.get(BASE_URL + '/' +  Cookies.get('empId'))
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL + '/' + Cookies.get('empId'))
+        } else {
+            alert("You need to login first")
+            window.location.replace("http://localhost:3008/");
+        }
     }
 
     updateEmployeeDetails(employee) {
+        if (null != Cookies.get('empId')) {
+            return axios.put(BASE_URL, employee)
+        } else {
+            alert("You need to login first")
+            window.location.replace("http://localhost:3008/");
+        }
 
-        return axios.put(BASE_URL, employee)
     }
 }
 
