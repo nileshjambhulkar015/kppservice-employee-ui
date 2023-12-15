@@ -3,11 +3,22 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
 import Cookies from 'js-cookie';
+
 export default function EmployeeKppComponent() {
 
     const [remark, setRemark] = useState('');
+    /*    
+    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('');
+    const [totalOverAllAchive, setTotalOverAllAchive] = useState('');
+    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('');
+    const [ekppStatus, setEkppStatus] = useState('');
+    const [remark, setRemark] = useState('');
+    const [evidence, setEvidence] = useState('');
+    */
+    
+
     const [kppResponses, setKppResponses] = useState([])
-    const [todos, setTodos] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "", ekppAppliedDate: "", ekppEvidence: "", ekppStatus: "Pending" }]);
+    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: ""}]);
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
             setKppResponses(res.data);
@@ -16,10 +27,10 @@ export default function EmployeeKppComponent() {
 
     const handleTodoChange = (e, i, kppId, kppOverallTarget) => {
         const field = e.target.name;
-        const newTodos = [...todos];
+        const empKpps = [...employeeKpps];
 
-        newTodos[i] = {
-            ...newTodos[i],
+        empKpps[i] = {
+            ...empKpps[i],
             "kppId": kppId,
             "empId": Cookies.get('empId'),
             "empEId": Cookies.get('empEId'),
@@ -31,14 +42,23 @@ export default function EmployeeKppComponent() {
             "ekppAchivedWeight": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
             [field]: e.target.value || 0,
         }
-        setTodos(newTodos);
+       setEmployeeKpps(empKpps);
+    
     };
 
     const saveEmployeeKpp = (e) => {
         e.preventDefault()
-
-        EmployeeKppsService.saveEmployeeKppDetails(todos).then(res => {
-            console.log("KPP added");
+       
+       let totalAchivedWeightage="totalAchivedWeightage";
+       let totalOverAllAchive="totalOverAllAchive";
+       let totalOverallTaskCompleted="totalOverallTaskCompleted";
+        let ekppStatus="Pending";
+        let remark="remark";
+        let evidence="evidence";
+        const payLoad = { "kppUpdateRequests":employeeKpps,totalAchivedWeightage,totalOverAllAchive,totalOverallTaskCompleted,ekppStatus,remark,evidence};
+        console.log(payLoad)
+        EmployeeKppsService.saveEmployeeKppDetails(payLoad).then(res => {
+            console.log("Employee KPP added");
         }
         );
     }
@@ -47,12 +67,19 @@ export default function EmployeeKppComponent() {
         <div className='container-fluid'>
             <div className="row">
                 <form className="form-horizontal">
+
+                <div className="form-group">
+                        <label className="control-label col-sm-1 col-sm-offset-4" htmlFor="reamrk">Select Month:</label>
+                        <div className="col-sm-2">
+                            <input type="date" className="form-control" id="deptName" />
+                        </div>
+                    </div>
                     <table className="table table-bordered">
                         <thead>
                             <tr className="text-center">
-                                <th>Sr No</th>
-                                <th>Objective</th>
-                                <th>Key Performance Indicator</th>
+                                <th className='text-center'>Sr No</th>
+                                <th className='text-center'>Objective</th>
+                                <th className='text-center'>Key Performance Indicator</th>
                                 <th>Overall Target</th>
                                 <th>Target Period</th>
                                 <th>UOM</th>
@@ -67,28 +94,41 @@ export default function EmployeeKppComponent() {
                                 kppResponses.map(
                                     (kppResponse, index) =>
                                         <tr key={kppResponse.kppId} className="text-justify">
-                                            <td>{index + 1}</td>
+                                            <td className='text-center'>{index + 1}</td>
                                             <td>{kppResponse.kppObjective}</td>
                                             <td>{kppResponse.kppPerformanceIndi}</td>
-                                            <td>{kppResponse.kppOverallTarget}</td>
-                                            <td>{kppResponse.kppTargetPeriod}</td>
+                                            <td className='text-center'>{kppResponse.kppOverallTarget}</td>
+                                            <td className='text-center'>{kppResponse.kppTargetPeriod}</td>
                                             <td>{kppResponse.kppUoM}</td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={0} value={todos[index]?.ekppAchivedWeight} disabled />
+                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={0} value={employeeKpps[index]?.ekppAchivedWeight} disabled />
                                             </td>
                                             <td>
                                                 <input type="number" className="form-control" name="ekppOverallAchieve" defaultValue={0} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
                                             </td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={0} value={todos[index]?.ekppOverallTaskComp} disabled />
+                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={0} value={employeeKpps[index]?.ekppOverallTaskComp} disabled />
                                             </td>
-                                            <td>{kppResponse.kppOverallWeightage}</td>
+                                            <td className='text-center'>{kppResponse.kppOverallWeightage}</td>
 
                                         </tr>
                                 )
                             }
+                            <tr className="text-justify">
+                                <td></td>
+                                <td></td>
+                                <td className='text-right'> <label className="control-label text-right" htmlFor="reamrk">Total</label></td>
+                                <td className='text-center'></td>
+                                <td className='text-center'> </td>
+                                <td></td>
+                                <td className='text-center'> <label className="control-label text-right" htmlFor="reamrk">100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" htmlFor="reamrk">100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" htmlFor="reamrk">100</label></td>
+                                <td className='text-center'></td>
+                            </tr>
                         </tbody>
                     </table>
+
                     <div className="form-group">
                         <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
                         <div className="col-sm-3">
@@ -117,7 +157,7 @@ export default function EmployeeKppComponent() {
                         <thead>
                             <tr className="text-center">
                                 <th>Sr No</th>
-                                <th>KPP Objective</th>
+                                <th className='text-center'>KPP Objective</th>
                                 <th>Rating 1</th>
                                 <th>Rating 2</th>
                                 <th>Rating 3</th>
@@ -132,9 +172,7 @@ export default function EmployeeKppComponent() {
 
                                 kppResponses.map(
                                     (kppResponse, index) =>
-
                                         <tr className="text-center">
-
                                             <td>{index + 1}</td>
                                             <td className="text-justify">{kppResponse.kppObjective}</td>
                                             <td>{kppResponse.kppRating1}</td>
