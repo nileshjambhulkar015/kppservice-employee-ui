@@ -6,19 +6,16 @@ import Cookies from 'js-cookie';
 
 export default function EmployeeKppComponent() {
 
-    const [remark, setRemark] = useState('');
-    /*    
-    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('');
-    const [totalOverAllAchive, setTotalOverAllAchive] = useState('');
-    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('');
+    const [ekppMonth, setEkppMonth] = useState('');
+    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('100');
+    const [totalOverAllAchive, setTotalOverAllAchive] = useState('100');
+    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('100');
     const [ekppStatus, setEkppStatus] = useState('');
     const [remark, setRemark] = useState('');
     const [evidence, setEvidence] = useState('');
-    */
-    
 
     const [kppResponses, setKppResponses] = useState([])
-    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: ""}]);
+    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
             setKppResponses(res.data);
@@ -37,25 +34,27 @@ export default function EmployeeKppComponent() {
             "roleId": Cookies.get('roleId'),
             "deptId": Cookies.get('deptId'),
             "desigId": Cookies.get('desigId'),
-            "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
+           // "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
             "ekppOverallTaskComp": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
             "ekppAchivedWeight": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
+            "ekppMonth":ekppMonth,
             [field]: e.target.value || 0,
         }
-       setEmployeeKpps(empKpps);
-    
+        setEmployeeKpps(empKpps);
+
     };
 
     const saveEmployeeKpp = (e) => {
         e.preventDefault()
-       
-       let totalAchivedWeightage="totalAchivedWeightage";
-       let totalOverAllAchive="totalOverAllAchive";
-       let totalOverallTaskCompleted="totalOverallTaskCompleted";
-        let ekppStatus="Pending";
-        let remark="remark";
-        let evidence="evidence";
-        const payLoad = { "kppUpdateRequests":employeeKpps,totalAchivedWeightage,totalOverAllAchive,totalOverallTaskCompleted,ekppStatus,remark,evidence};
+        let ekppStatus = "In-Progress";
+        let evidence = "evidence";
+        /*let totalAchivedWeightage="totalAchivedWeightage";
+        let totalOverAllAchive="totalOverAllAchive";
+        let totalOverallTaskCompleted="totalOverallTaskCompleted";
+         
+         let remark="remark";
+         let evidence="evidence";*/
+        const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark, evidence };
         console.log(payLoad)
         EmployeeKppsService.saveEmployeeKppDetails(payLoad).then(res => {
             console.log("Employee KPP added");
@@ -68,10 +67,10 @@ export default function EmployeeKppComponent() {
             <div className="row">
                 <form className="form-horizontal">
 
-                <div className="form-group">
-                        <label className="control-label col-sm-1 col-sm-offset-4" htmlFor="reamrk">Select Month:</label>
+                    <div className="form-group">
+                        <label className="control-label col-sm-1 col-sm-offset-4"  >Select Month:</label>
                         <div className="col-sm-2">
-                            <input type="date" className="form-control" id="deptName" />
+                            <input type="date" className="form-control" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)}/>
                         </div>
                     </div>
                     <table className="table table-bordered">
@@ -104,7 +103,7 @@ export default function EmployeeKppComponent() {
                                                 <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={0} value={employeeKpps[index]?.ekppAchivedWeight} disabled />
                                             </td>
                                             <td>
-                                                <input type="number" className="form-control" name="ekppOverallAchieve" defaultValue={0} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
+                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={0} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
                                             </td>
                                             <td>
                                                 <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={0} value={employeeKpps[index]?.ekppOverallTaskComp} disabled />
@@ -121,9 +120,9 @@ export default function EmployeeKppComponent() {
                                 <td className='text-center'></td>
                                 <td className='text-center'> </td>
                                 <td></td>
-                                <td className='text-center'> <label className="control-label text-right" htmlFor="reamrk">100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" htmlFor="reamrk">100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" htmlFor="reamrk">100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>100</label></td>
                                 <td className='text-center'></td>
                             </tr>
                         </tbody>
