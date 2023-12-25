@@ -7,9 +7,9 @@ import Cookies from 'js-cookie';
 export default function EmployeeKppComponent() {
 
     const [ekppMonth, setEkppMonth] = useState('');
-    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('100');
-    const [totalOverAllAchive, setTotalOverAllAchive] = useState('100');
-    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('100');
+    const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('0');
+    const [totalOverAllAchive, setTotalOverAllAchive] = useState('0');
+    const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('0');
     const [ekppStatus, setEkppStatus] = useState('');
     const [remark, setRemark] = useState('');
     const [evidence, setEvidence] = useState('');
@@ -22,10 +22,15 @@ export default function EmployeeKppComponent() {
         });
     }, []);
 
+const addKppDetails=(empKpps)=>{
+const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppOverallTaskComp, 0); 
+setTotalAchivedWeightage(sum)
+}
+
     const handleTodoChange = (e, i, kppId, kppOverallTarget) => {
         const field = e.target.name;
         const empKpps = [...employeeKpps];
-
+        
         empKpps[i] = {
             ...empKpps[i],
             "kppId": kppId,
@@ -40,6 +45,7 @@ export default function EmployeeKppComponent() {
             "ekppMonth":ekppMonth,
             [field]: e.target.value || 0,
         }
+        addKppDetails(empKpps)
         setEmployeeKpps(empKpps);
 
     };
@@ -120,9 +126,9 @@ export default function EmployeeKppComponent() {
                                 <td className='text-center'></td>
                                 <td className='text-center'> </td>
                                 <td></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>100</label></td>
-                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>100</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalAchivedWeightage" onChange={(e) => setTotalAchivedWeightage(e.target.value)}>{totalAchivedWeightage}</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverAllAchive" onChange={(e) => setTotalOverAllAchive(e.target.value)}>{totalOverAllAchive}</label></td>
+                                <td className='text-center'> <label className="control-label text-right" name="totalOverallTaskCompleted" onChange={(e) => setTotalOverallTaskCompleted(e.target.value)}>{totalOverallTaskCompleted}</label></td>
                                 <td className='text-center'></td>
                             </tr>
                         </tbody>
