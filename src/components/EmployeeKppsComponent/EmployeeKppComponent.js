@@ -15,22 +15,32 @@ export default function EmployeeKppComponent() {
     const [evidence, setEvidence] = useState('');
 
     const [kppResponses, setKppResponses] = useState([])
-    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "",ekkpMonth:"" }]);
+    const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "", ekkpMonth: "" }]);
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
             setKppResponses(res.data);
         });
     }, []);
 
-const addKppDetails=(empKpps)=>{
-const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppOverallTaskComp, 0); 
-setTotalAchivedWeightage(sum)
-}
+    const totalOverallTaskComp = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppOverallTaskComp, 0);
+        setTotalAchivedWeightage(sum)
+    }
+
+    const totalOverallAchieve = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppOverallAchieve, 0);
+        setTotalOverAllAchive(sum)
+    }
+
+    const totalAchivedWeight = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + currentValue.ekppAchivedWeight, 0);
+        setTotalOverallTaskCompleted(sum)
+    }
 
     const handleTodoChange = (e, i, kppId, kppOverallTarget) => {
         const field = e.target.name;
         const empKpps = [...employeeKpps];
-        
+
         empKpps[i] = {
             ...empKpps[i],
             "kppId": kppId,
@@ -39,13 +49,15 @@ setTotalAchivedWeightage(sum)
             "roleId": Cookies.get('roleId'),
             "deptId": Cookies.get('deptId'),
             "desigId": Cookies.get('desigId'),
-           // "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
+            // "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
             "ekppOverallTaskComp": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
             "ekppAchivedWeight": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
-            "ekppMonth":ekppMonth,
+            "ekppMonth": ekppMonth,
             [field]: e.target.value || 0,
         }
-        addKppDetails(empKpps)
+        totalOverallTaskComp(empKpps)
+        totalOverallAchieve(empKpps)
+        totalAchivedWeight(empKpps)
         setEmployeeKpps(empKpps);
 
     };
@@ -63,7 +75,7 @@ setTotalAchivedWeightage(sum)
         const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark, evidence };
         console.log(payLoad)
         EmployeeKppsService.saveEmployeeKppDetails(payLoad).then(res => {
-            console.log("Employee KPP added");
+            alert("Employee KPP added");
         }
         );
     }
@@ -76,7 +88,7 @@ setTotalAchivedWeightage(sum)
                     <div className="form-group">
                         <label className="control-label col-sm-1 col-sm-offset-4"  >Select Month:</label>
                         <div className="col-sm-2">
-                            <input type="date" className="form-control" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)}/>
+                            <input type="date" className="form-control" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
                         </div>
                     </div>
                     <table className="table table-bordered">
