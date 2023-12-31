@@ -7,8 +7,16 @@ const BASE_URL = KPP_API_BASE_URL+`/employee-key-perform-parameter/kpp?roleId=${
 class EmployeeKppsService {
 
     getKPPDetails() {
-        if (null != Cookies.get('empId')) {
+       /* if (null != Cookies.get('empId')) {
             return axios.get(BASE_URL)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }*/
+       // console.log("new emop Id : ", empId)
+        if (null != Cookies.get('empId')) {
+
+            return axios.get(`http://localhost:9091/hod-approval/employee-kpp?empEId=${Cookies.get('empEId')}&statusCd=A`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

@@ -118,13 +118,13 @@ export default function EmployeeKppComponent() {
                                             <td className='text-center'>{kppResponse.kppTargetPeriod}</td>
                                             <td>{kppResponse.kppUoM}</td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={0} value={employeeKpps[index]?.ekppAchivedWeight} disabled />
+                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={kppResponse.ekppAchivedWeight}  disabled />
                                             </td>
                                             <td>
-                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={0} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
+                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={kppResponse.ekppOverallAchieve} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
                                             </td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={0} value={employeeKpps[index]?.ekppOverallTaskComp} disabled />
+                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={kppResponse.ekppOverallTaskComp} disabled />
                                             </td>
                                             <td className='text-center'>{kppResponse.kppOverallWeightage}</td>
 
@@ -163,7 +163,7 @@ export default function EmployeeKppComponent() {
             </div>
             <div className="row">
                 <div className="col-sm-10"></div>
-                <div className="col-sm-2"><button type="submit" className="btn btn-success" onClick={(e) => saveEmployeeKpp(e)}> Submit</button>
+                <div className="col-sm-2"><button type="submit" className="btn btn-success"   onClick={(e) => saveEmployeeKpp(e)}> Submit</button>
 
                 </div>
             </div>
