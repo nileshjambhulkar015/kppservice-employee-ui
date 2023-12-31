@@ -2,7 +2,7 @@ import React from "react";
 import { Route, BrowserRouter, Link, Routes } from 'react-router-dom';
 import EmployeeKppComponent from "./components/EmployeeKppsComponent/EmployeeKppComponent";
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
-import UpdateHodProfileComponent from "./components/UpdateHodProfileComponent/UpdateHodProfileComponent";
+import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import Cookies from 'js-cookie';
 function App() {
 
@@ -45,7 +45,7 @@ function App() {
 
         <Route exact path="/" element={<EmployeeKppComponent />}></Route>
         <Route exact path="/employeekpp" element={<EmployeeKppComponent />}></Route>
-        <Route exact path="/updateHodProfile" element={<UpdateHodProfileComponent />}></Route>
+        <Route exact path="/updateEmployeeProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
       </Routes>
     </BrowserRouter>

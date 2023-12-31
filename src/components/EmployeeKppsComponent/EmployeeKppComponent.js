@@ -10,7 +10,6 @@ export default function EmployeeKppComponent() {
     const [totalAchivedWeightage, setTotalAchivedWeightage] = useState('0');
     const [totalOverAllAchive, setTotalOverAllAchive] = useState('0');
     const [totalOverallTaskCompleted, setTotalOverallTaskCompleted] = useState('0');
-    const [ekppStatus, setEkppStatus] = useState('');
     const [remark, setRemark] = useState('');
     const [evidence, setEvidence] = useState('');
 
