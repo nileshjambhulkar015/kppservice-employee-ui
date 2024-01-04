@@ -48,7 +48,6 @@ export default function EmployeeKppComponent() {
             "roleId": Cookies.get('roleId'),
             "deptId": Cookies.get('deptId'),
             "desigId": Cookies.get('desigId'),
-            // "ekppStatus": "Pending",  // NEED TO MAKE IT DYNAMIC
             "ekppOverallTaskComp": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
             "ekppAchivedWeight": field === "ekppOverallAchieve" && !!e.target.value ? Number(e.target.value) + Number(kppOverallTarget) : 0,
             "ekppMonth": ekppMonth,
@@ -65,12 +64,7 @@ export default function EmployeeKppComponent() {
         e.preventDefault()
         let ekppStatus = "In-Progress";
         let evidence = "evidence";
-        /*let totalAchivedWeightage="totalAchivedWeightage";
-        let totalOverAllAchive="totalOverAllAchive";
-        let totalOverallTaskCompleted="totalOverallTaskCompleted";
-         
-         let remark="remark";
-         let evidence="evidence";*/
+       
         const payLoad = { "kppUpdateRequests": employeeKpps, totalAchivedWeightage, totalOverAllAchive, totalOverallTaskCompleted, ekppStatus, remark, evidence };
         console.log(payLoad)
         EmployeeKppsService.saveEmployeeKppDetails(payLoad).then(res => {
