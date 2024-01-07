@@ -15,8 +15,8 @@ class EmployeeKppsService {
         }*/
        // console.log("new emop Id : ", empId)
         if (null != Cookies.get('empId')) {
-
-            return axios.get(`http://localhost:9091/hod-approval/employee-kpp?empEId=${Cookies.get('empEId')}&statusCd=A`)
+           
+            return axios.get(`http://localhost:9091/employee-kpp-status?empId=${Cookies.get('empId')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

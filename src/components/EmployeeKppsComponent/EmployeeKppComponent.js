@@ -13,11 +13,15 @@ export default function EmployeeKppComponent() {
     const [remark, setRemark] = useState('');
     const [evidence, setEvidence] = useState('');
 
-    const [kppResponses, setKppResponses] = useState([])
+    const [kppMasterResponses, setKppMasterResponses] = useState()
+    const [kppDetailsResponses, setKppDetailsResponses] = useState([])
     const [employeeKpps, setEmployeeKpps] = useState([{ kppId: "", empId: "", empEId: "", roleId: "", deptId: "", desigId: "", ekppAchivedWeight: "", ekppOverallAchieve: "", ekppOverallTaskComp: "", ekkpMonth: "" }]);
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
-            setKppResponses(res.data);
+      
+            
+            setKppMasterResponses(res.data);
+            setKppDetailsResponses(res.data.kppStatusDetails)
         });
     }, []);
 
@@ -101,7 +105,7 @@ export default function EmployeeKppComponent() {
                         </thead>
                         <tbody>
                             {
-                                kppResponses.map(
+                                kppDetailsResponses.map(
                                     (kppResponse, index) =>
                                         <tr key={kppResponse.kppId} className="text-justify">
                                             <td className='text-center'>{index + 1}</td>
@@ -111,13 +115,13 @@ export default function EmployeeKppComponent() {
                                             <td className='text-center'>{kppResponse.kppTargetPeriod}</td>
                                             <td>{kppResponse.kppUoM}</td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={kppResponse.ekppAchivedWeight}  disabled />
+                                                <input type="text" className="form-control" name="ekppAchivedWeight" defaultValue={kppResponse.empAchivedWeight}  disabled />
                                             </td>
                                             <td>
-                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={kppResponse.ekppOverallAchieve} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
+                                                <input type="number" className="form-control" min="0" name="ekppOverallAchieve" defaultValue={kppResponse.empOverallAchieve} onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallTarget)} />
                                             </td>
                                             <td>
-                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={kppResponse.ekppOverallTaskComp} disabled />
+                                                <input type="text" className="form-control" name="ekppOverallTaskComp" defaultValue={kppResponse.empOverallTaskComp} disabled />
                                             </td>
                                             <td className='text-center'>{kppResponse.kppOverallWeightage}</td>
 
@@ -180,7 +184,7 @@ export default function EmployeeKppComponent() {
 
                             {
 
-                                kppResponses.map(
+                                kppDetailsResponses.map(
                                     (kppResponse, index) =>
                                         <tr className="text-center">
                                             <td>{index + 1}</td>
