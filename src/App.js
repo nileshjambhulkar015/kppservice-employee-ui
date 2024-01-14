@@ -4,6 +4,7 @@ import EmployeeKppComponent from "./components/EmployeeKppsComponent/EmployeeKpp
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import Cookies from 'js-cookie';
+import EmplyeeKppRatingsComponent from "./components/EmplyeeKppRatingsComponent/EmplyeeKppRatingsComponent";
 function App() {
 
   //remove cookies when click on logout
@@ -42,9 +43,9 @@ function App() {
         </div>
       </nav>
       <Routes>
-
-        <Route exact path="/" element={<EmployeeKppComponent />}></Route>
-        <Route exact path="/employeekpp" element={<EmployeeKppComponent />}></Route>
+    
+        <Route exact path="/" element={<EmplyeeKppRatingsComponent />}></Route>
+        <Route exact path="/employeekpp" element={<EmplyeeKppRatingsComponent />}></Route>
         <Route exact path="/updateEmployeeProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
       </Routes>
