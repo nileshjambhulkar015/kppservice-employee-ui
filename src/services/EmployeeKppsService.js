@@ -7,13 +7,6 @@ const BASE_URL = KPP_API_BASE_URL+`/employee-key-perform-parameter/kpp?roleId=${
 class EmployeeKppsService {
 
     getKPPDetails() {
-       /* if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL)
-        } else {
-            alert("You need to login first")
-            window.location.replace(LOGIN_UI_BASE_URL);
-        }*/
-       // console.log("new emop Id : ", empId)
         if (null != Cookies.get('empId')) {
            
             return axios.get(`http://localhost:9091/employee-kpp-status?empId=${Cookies.get('empId')}`)
@@ -21,18 +14,25 @@ class EmployeeKppsService {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
         }
-
     }
 
     saveEmployeeKppDetails(todos){
-
-
         if (null != Cookies.get('empId')) {
             return axios.put(KPP_API_BASE_URL+"/employee-key-perform-parameter",todos)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
         }  
+    }
+
+    getEmployeeKPPReport(employeeId) {
+        if (null != Cookies.get('empId')) {    
+            console.log(employeeId)       
+            return axios.get(`http://localhost:9091/report/employee-kpp-status?empId=${employeeId}`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
     }
 
 }

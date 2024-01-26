@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, BrowserRouter, Link, Routes } from 'react-router-dom';
-import EmployeeKppComponent from "./components/EmployeeKppsComponent/EmployeeKppComponent";
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
 import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import Cookies from 'js-cookie';

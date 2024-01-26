@@ -31,6 +31,12 @@ const EmplyeeKppRatingsComponent = () => {
             setKppDetailsResponses(res.data.kppStatusDetails)
         });
     }, []);
+
+    const handleExcel=()=>{
+        EmployeeKppsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
+            alert("Report generated");
+        });
+    }
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -240,7 +246,11 @@ const EmplyeeKppRatingsComponent = () => {
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
-                                        <button type="submit" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}> Download</button>
+                                        
+                                    <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}   
+                                    onClick={() => { handleExcel()
+                                          
+                                        }}> Download</button>
                                     </div>
                                 </div>
                             </Form>
