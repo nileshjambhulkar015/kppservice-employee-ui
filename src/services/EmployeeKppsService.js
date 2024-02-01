@@ -18,7 +18,7 @@ class EmployeeKppsService {
 
     saveEmployeeKppDetails(todos){
         if (null != Cookies.get('empId')) {
-            return axios.put(KPP_API_BASE_URL+"/employee-key-perform-parameter",todos)
+            return axios.put(KPP_API_BASE_URL+"/employee-kpp",todos)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
