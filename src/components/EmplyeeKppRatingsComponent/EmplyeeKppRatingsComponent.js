@@ -11,21 +11,39 @@ const EmplyeeKppRatingsComponent = () => {
 
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
-    const totalAchivedWeight = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empAchivedWeight), 0);
-        return sum;
+
+    const YYYY_MM_DD_Formater = (date,format='YYYY-MM-DD') => {
+        const t = new Date(date)
+        const y = t.getFullYear()
+        const m = ('0' + (t.getMonth() + 1)).slice(-2)
+        const d = ('0' + t.getDate()).slice(-2)
+        return format.replace('YYYY',y).replace('MM',m).replace('DD',d)
     }
+    
+   
+
+    const totalAchivedWeight = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empAchivedWeight), 0);
+        return sum.toFixed(1);
+    }
+
+
 
     const totalOverAllAchive = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
         return sum;
     }
     const totalOverallTaskComp = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallTaskComp), 0);
-        return sum;
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallTaskComp), 0);
+        return sum.toFixed(1);
     }
+    console.log("ekppMonth line 39=", ekppMonth)
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
+            console.log("response =", res.data.ekppMonth)
+            console.log("before ekppMonth =", ekppMonth)
+            setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+            console.log("after ekppMonth =", ekppMonth)
             setKppMasterResponses(res.data);
             setEmpRemark(res.data.empRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
@@ -50,7 +68,7 @@ const EmplyeeKppRatingsComponent = () => {
                     onSubmit={(values) => {
                         let ekppStatus = "In-Progress";
                         let evidence = "evidence";
-                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": values?.totalAchivedWeightage, "totalOverAllAchive": values?.totalOverAllAchive, "totalOverallTaskCompleted": values?.totalOverallTaskCompleted, ekppStatus, empRemark, evidence };
+                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": values?.totalAchivedWeightage, "totalOverAllAchive": values?.totalOverAllAchive, "totalOverallTaskCompleted": values?.totalOverallTaskCompleted, ekppMonth,ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             alert("Employee KPP added");
                         });
@@ -88,7 +106,7 @@ const EmplyeeKppRatingsComponent = () => {
                                 <div className="form-group">
                                     <label className="control-label col-sm-1 "  >Select Date:</label>
                                     <div className="col-sm-2">
-                                        <input type="date" className="form-control" name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
+                                        <input type="date" className="form-control" defaultValue={ekppMonth}  name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
                                     </div>
                                 </div>
                                 <table className="table table-bordered" >
