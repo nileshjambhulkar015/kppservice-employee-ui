@@ -32,7 +32,7 @@ function App() {
 
             <li><Link to="/employeekpp">Add KPP</Link></li>
             <li><Link to="/employeekpp">View KPP</Link></li>
-            <li><Link to="/updateHodProfile">View Profile</Link></li>
+            <li><Link to="/updateEmployeeProfile">View Profile</Link></li>
             <li><Link to="/changePassword">Change Password</Link></li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
