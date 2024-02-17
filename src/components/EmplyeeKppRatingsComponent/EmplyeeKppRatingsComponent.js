@@ -171,6 +171,7 @@ const EmplyeeKppRatingsComponent = () => {
                                                         <input type="number" className="form-control"
                                                             name={`${index}.empOverallAchieve`}
                                                             min={0}
+                                                            max={5}
                                                             defaultValue={values?.fields?.[index]?.empOverallAchieve}
 
                                                             onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.empOverallTaskComp, kppResponse.kppRating1)}
@@ -245,12 +246,7 @@ const EmplyeeKppRatingsComponent = () => {
                                     </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Hod Remark</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodRemark}</label>
-                                    </div>
-                                </div>
+                          
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">GM Status</label>
@@ -259,12 +255,7 @@ const EmplyeeKppRatingsComponent = () => {
                                     </div>
                                 </div>
 
-                                <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">GM Remark</label>
-                                    <div className="col-sm-6">
-                                        <label htmlFor="empKppStatus">{kppMasterResponses?.gmRemark}</label>
-                                    </div>
-                                </div>
+                             
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
