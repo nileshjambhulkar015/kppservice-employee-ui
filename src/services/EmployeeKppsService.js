@@ -35,6 +35,30 @@ class EmployeeKppsService {
         }
     }
 
+
+    // view previous months kpp 
+    getEmployeeKppReportDetailsByPaging() {
+        if (null != Cookies.get('empId')) {    
+                 
+            return axios.get(`http://localhost:9091/employee/employee-kpp-status-report?empId=${Cookies.get('empId')}`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+      // view previous months kpp  bt from date and to date
+      getEmployeeKppReportByDates(fromDate, toDate) {
+        if (null != Cookies.get('empId')) {    
+                 
+            return axios.get(`http://localhost:9091/employee/employee-kpp-status-report?fromDate=${fromDate}&toDate=${toDate}&empId=${Cookies.get('empId')}&page=0&size=1200`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+    
+
 }
 
 
