@@ -5,8 +5,8 @@ export default function ViewEmployeeKppComponent() {
 
     const navigate = useNavigate();
 
-    const [fromDate, setFromDate] = useState()
-    const [toDate, setToDate] = useState()
+    const [fromDate, setFromDate] = useState('')
+    const [toDate, setToDate] = useState('')
     const [sumOfEmployeeRatings, setSumOfEmployeeRatings] = useState()
     const [sumOfHodRatings, setSumOfHodRatings] = useState()
     const [sumOfGMRatings, setSumOfGMRatings] = useState()
@@ -71,7 +71,7 @@ export default function ViewEmployeeKppComponent() {
 
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> To Date:</label>
                     <div className="col-sm-2">
-                    <input type="date" className="form-control" defaultValue={toDate} name="fromDate" onChange={(e) => setToDate(e.target.value)} />
+                    <input type="date" className="form-control" defaultValue={toDate} name="toDate" onChange={(e) => setToDate(e.target.value)} />
                     </div>
                 </form>
                 <button type="submit" className="btn btn-primary" onClick={(e)=>getKPPDetailsByDate(fromDate,toDate)}>Search</button>

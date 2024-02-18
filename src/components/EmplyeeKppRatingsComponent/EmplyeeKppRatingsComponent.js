@@ -258,7 +258,7 @@ const EmplyeeKppRatingsComponent = () => {
                              
                                 <div className="row">
                                     <div className="col-sm-10"></div>
-                                    <div className="col-sm-2"><button type="submit" className="btn btn-success"> Submit</button>
+                                    <div className="col-sm-2"><button type="submit" className="btn btn-success" disabled={kppMasterResponses?.hodKppStatus==="Approved"}> Submit</button>
                                     <a href={`http://localhost:9091/report/employee-kpp-status?empId=${Cookies.get('empId')}`}>
                                         <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}
                                            > Download</button>
