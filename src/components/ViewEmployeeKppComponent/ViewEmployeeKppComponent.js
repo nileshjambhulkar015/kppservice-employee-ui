@@ -103,7 +103,7 @@ export default function ViewEmployeeKppComponent() {
                                         <td className="text-center">{employee.gmOverallAchieve}</td>
                                         <td className="text-center">{employee.sumOfRatings}</td>
 
-                                        <td className="text-center"> <button type="submit" className="btn btn-info">Assign</button></td>
+                                        <td className="text-center"> <button type="submit" className="btn btn-info">View</button></td>
                                     </tr>
 
                             )
