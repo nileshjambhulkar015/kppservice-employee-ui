@@ -119,7 +119,7 @@ export default function ViewEmployeeKppComponent() {
                             <td className="text-center"></td>
                         </tr>
                         <tr>
-                            <th className="text-right">Cummalative Ratings: </th>
+                            <th className="text-right">Overall Cummalative Ratings: </th>
                             <td className="text-center">{cummulativeRatings}</td>
                         </tr>
                         <tr>
