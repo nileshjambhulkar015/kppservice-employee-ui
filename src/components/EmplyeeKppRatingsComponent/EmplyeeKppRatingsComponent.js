@@ -59,6 +59,7 @@ const EmplyeeKppRatingsComponent = () => {
             alert("Report generated");
         });
     }
+    
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -159,7 +160,7 @@ const EmplyeeKppRatingsComponent = () => {
                                                     <td>{kppResponse.kppPerformanceIndi}</td>
                                                     <td className='text-center'>{kppResponse.kppOverallTarget}</td>
                                                     <td className='text-center'>{kppResponse.kppTargetPeriod}</td>
-                                                    <td>{kppResponse.kppUoM}</td>
+                                                    <td>{kppResponse.uomName}</td>
                                                     <td className='text-center'>{kppResponse.kppOverallWeightage}</td>
 
 
