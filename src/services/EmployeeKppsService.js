@@ -40,7 +40,7 @@ class EmployeeKppsService {
     getEmployeeKppReportDetailsByPaging() {
         if (null != Cookies.get('empId')) {    
                  
-            return axios.get(`http://localhost:9091/employee/employee-kpp-status-report?empId=${Cookies.get('empId')}`)
+            return axios.get(`http://localhost:9091/cumulative/employee-kpp-cumulative?empId=${Cookies.get('empId')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -51,7 +51,7 @@ class EmployeeKppsService {
       getEmployeeKppReportByDates(fromDate, toDate) {
         if (null != Cookies.get('empId')) {    
                  
-            return axios.get(`http://localhost:9091/employee/employee-kpp-status-report?fromDate=${fromDate}&toDate=${toDate}&empId=${Cookies.get('empId')}&page=0&size=1200`)
+            return axios.get(`http://localhost:9091/cumulative/employee-kpp-cumulative?fromDate=${fromDate}&toDate=${toDate}&empId=${Cookies.get('empId')}&page=0&size=1200`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

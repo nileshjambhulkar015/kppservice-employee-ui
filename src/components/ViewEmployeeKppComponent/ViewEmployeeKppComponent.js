@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import EmployeeKppsService from "../../services/EmployeeKppsService";
+import Cookies from 'js-cookie';
 export default function ViewEmployeeKppComponent() {
 
     const navigate = useNavigate();
@@ -19,30 +20,43 @@ export default function ViewEmployeeKppComponent() {
     useEffect(() => {
         EmployeeKppsService.getEmployeeKppReportDetailsByPaging().then((res) => {
 
-            setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
-            setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
-            setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
-            setCummulativeRatings(res.data.responseData.cummulativeRatings)
-            setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
 
-            setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+            if (res.data.success) {
 
+                setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
+                setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
+                setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
+                setCummulativeRatings(res.data.responseData.cummulativeRatings)
+                setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
 
+                setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+            }
+            else {
+                alert("Kpp is not approved for month");
+
+            }
+
+        }).catch((err) => {
+            alert(err.response.data.details)
         });
 
     }, []);
 
-    
+
     const getKPPDetailsByDate = (e) => {
         EmployeeKppsService.getEmployeeKppReportByDates(fromDate, toDate).then((res) => {
+            if (res.data.success) {
+                setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
+                setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
+                setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
+                setCummulativeRatings(res.data.responseData.cummulativeRatings)
+                setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
 
-            setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
-            setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
-            setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
-            setCummulativeRatings(res.data.responseData.cummulativeRatings)
-            setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
+                setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+            } else {
+                alert("Kpp is not found for month");
 
-            setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+            }
 
 
         });
@@ -66,15 +80,15 @@ export default function ViewEmployeeKppComponent() {
                 <form className="form-horizontal" enctype="multipart/form-data">
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
                     <div className="col-sm-2">
-                    <input type="date" className="form-control" defaultValue={fromDate} name="fromDate" onChange={(e) => setFromDate(e.target.value)} />
+                        <input type="date" className="form-control" defaultValue={fromDate} name="fromDate" onChange={(e) => setFromDate(e.target.value)} />
                     </div>
 
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> To Date:</label>
                     <div className="col-sm-2">
-                    <input type="date" className="form-control" defaultValue={toDate} name="toDate" onChange={(e) => setToDate(e.target.value)} />
+                        <input type="date" className="form-control" defaultValue={toDate} name="toDate" onChange={(e) => setToDate(e.target.value)} />
                     </div>
                 </form>
-                <button type="submit" className="btn btn-primary" onClick={(e)=>getKPPDetailsByDate(fromDate,toDate)}>Search</button>
+                <button type="submit" className="btn btn-primary" onClick={(e) => getKPPDetailsByDate(fromDate, toDate)}>Search</button>
             </div>
 
 
@@ -103,7 +117,12 @@ export default function ViewEmployeeKppComponent() {
                                         <td className="text-center">{employee.gmOverallAchieve}</td>
                                         <td className="text-center">{employee.sumOfRatings}</td>
 
-                                        <td className="text-center"> <button type="submit" className="btn btn-info">View</button></td>
+                                        <td className="text-center">
+                                        
+                                        <a href={`http://localhost:9091/report/completed-employee-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
+                                        <button type="submit" className="btn btn-info">Download</button>
+                                        </a>
+                                        </td>
                                     </tr>
 
                             )
