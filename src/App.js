@@ -1,10 +1,11 @@
-import React from "react";
-import { Route, BrowserRouter, Link, Routes } from 'react-router-dom';
-import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
-import ViewProfileComponent from "./components/ViewProfileComponent/ViewProfileComponent";
 import Cookies from 'js-cookie';
+import React from "react";
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
+import EmployeeCumulativeKppComponent from "./components/EmployeeCumulativeKppComponent/EmployeeCumulativeKppComponent";
 import EmplyeeKppRatingsComponent from "./components/EmplyeeKppRatingsComponent/EmplyeeKppRatingsComponent";
-import ViewEmployeeKppComponent from "./components/ViewEmployeeKppComponent/ViewEmployeeKppComponent";
+import ViewProfileComponent from './components/ViewProfileComponent/ViewProfileComponent';
+
 function App() {
 
   //remove cookies when click on logout
@@ -43,10 +44,10 @@ function App() {
         </div>
       </nav>
       <Routes>
-    
+
         <Route exact path="/" element={<EmplyeeKppRatingsComponent />}></Route>
         <Route exact path="/employeekpp" element={<EmplyeeKppRatingsComponent />}></Route>
-        <Route exact path="/viewKppReport" element={<ViewEmployeeKppComponent />}></Route>
+        <Route exact path="/viewKppReport" element={<EmployeeCumulativeKppComponent />}></Route>
         <Route exact path="/updateEmployeeProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
       </Routes>

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import EmployeeKppsService from "../../services/EmployeeKppsService";
-import Cookies from 'js-cookie';
-export default function ViewEmployeeKppComponent() {
+export default function EmployeeCumulativeKppComponent() {
 
     const navigate = useNavigate();
 
@@ -118,10 +117,10 @@ export default function ViewEmployeeKppComponent() {
                                         <td className="text-center">{employee.sumOfRatings}</td>
 
                                         <td className="text-center">
-                                        
-                                        <a href={`http://localhost:9091/report/completed-employee-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
-                                        <button type="submit" className="btn btn-info">Download</button>
-                                        </a>
+
+                                            <a href={`http://localhost:9091/report/completed-employee-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
+                                                <button type="submit" className="btn btn-info">Download</button>
+                                            </a>
                                         </td>
                                     </tr>
 

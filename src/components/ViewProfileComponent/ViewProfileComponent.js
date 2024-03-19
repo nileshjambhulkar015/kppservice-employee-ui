@@ -6,15 +6,15 @@ export default function ViewProfileComponent() {
 
     const [empId, setEmpId] = useState('');
     const [empEId, setEmpEId] = useState('');
-   
+
     const [roleName, setRoleName] = useState('');
- 
+
     const [deptName, setDeptName] = useState('');
-  
+
     const [desigName, setDesigName] = useState('');
- 
-   
-  
+
+
+
     const [empFirstName, setEmpFirstName] = useState('');
     const [empMiddleName, setEmpMiddleName] = useState('');
     const [empLastName, setEmpLastName] = useState('');
@@ -26,20 +26,20 @@ export default function ViewProfileComponent() {
     const [tempAddress, setTempAddress] = useState('');
     const [permAddress, setPermAddress] = useState('');
     const [empGender, setEmpGender] = useState('');
- 
+
     useEffect(() => {
         ViewProfileService.getEmployeeById(empId).then(res => {
             let employee = res.data;
             console.log(employee)
             setEmpId(employee.empId)
             setEmpEId(employee.empEId)
-           
+
             setRoleName(employee.roleName)
-        
+
             setDeptName(employee.deptName)
-            
+
             setDesigName(employee.desigName)
-        
+
             setEmpFirstName(employee.empFirstName)
             setEmpMiddleName(employee.empMiddleName)
             setEmpLastName(employee.empLastName)

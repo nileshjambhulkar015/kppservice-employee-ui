@@ -1,9 +1,7 @@
-import React from 'react';
-import { Form, Formik } from 'formik'
-import { useEffect } from 'react';
-import { useState } from 'react';
-import EmployeeKppsService from '../../services/EmployeeKppsService';
+import { Form, Formik } from 'formik';
 import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react';
+import EmployeeKppsService from '../../services/EmployeeKppsService';
 
 const EmplyeeKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
@@ -27,7 +25,7 @@ const EmplyeeKppRatingsComponent = () => {
 
 
     const sumTotalAchivedWeight = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empAchivedWeight), 0);
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empAchivedWeight), 0).toFixed(1);
         setTotalAchivedWeight(sum)
         return sum;
     }
@@ -47,7 +45,7 @@ const EmplyeeKppRatingsComponent = () => {
 
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
-            setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))           
+            setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
             setKppMasterResponses(res.data);
             setEmpRemark(res.data.empRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
@@ -59,7 +57,7 @@ const EmplyeeKppRatingsComponent = () => {
             alert("Report generated");
         });
     }
-    
+
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -247,7 +245,7 @@ const EmplyeeKppRatingsComponent = () => {
                                     </div>
                                 </div>
 
-                          
+
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">GM Status</label>
@@ -256,16 +254,16 @@ const EmplyeeKppRatingsComponent = () => {
                                     </div>
                                 </div>
 
-                             
+
                                 <div className="row">
                                     <div className="col-sm-10"></div>
-                                    <div className="col-sm-2"><button type="submit" className="btn btn-success" disabled={kppMasterResponses?.hodKppStatus==="Approved"}> Submit</button>
-                                    <a href={`http://localhost:9091/report/in-progress-employee-kpp-status?empId=${Cookies.get('empId')}`}>
-                                        <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}
-                                           > Download</button>
-                                            </a>
+                                    <div className="col-sm-2"><button type="submit" className="btn btn-success" disabled={kppMasterResponses?.hodKppStatus === "Approved"}> Submit</button>
+                                        <a href={`http://localhost:9091/report/in-progress-employee-kpp-status?empId=${Cookies.get('empId')}`}>
+                                            <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}
+                                            > Download</button>
+                                        </a>
                                     </div>
-                                    
+
                                 </div>
                             </Form>
                         )
