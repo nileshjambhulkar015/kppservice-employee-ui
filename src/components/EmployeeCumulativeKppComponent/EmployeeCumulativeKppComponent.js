@@ -7,6 +7,7 @@ export default function EmployeeCumulativeKppComponent() {
 
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
+    const [totalMonths, setTotalMonths] = useState()
     const [sumOfEmployeeRatings, setSumOfEmployeeRatings] = useState()
     const [sumOfHodRatings, setSumOfHodRatings] = useState()
     const [sumOfGMRatings, setSumOfGMRatings] = useState()
@@ -26,6 +27,7 @@ export default function EmployeeCumulativeKppComponent() {
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
                 setCummulativeRatings(res.data.responseData.cummulativeRatings)
+                setTotalMonths(res.data.responseData.totalMonths)
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
 
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
@@ -78,6 +80,7 @@ export default function EmployeeCumulativeKppComponent() {
             <div className="form-group">
                 <form className="form-horizontal" enctype="multipart/form-data">
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
+
                     <div className="col-sm-2">
                         <input type="date" className="form-control" defaultValue={fromDate} name="fromDate" onChange={(e) => setFromDate(e.target.value)} />
                     </div>
@@ -140,6 +143,11 @@ export default function EmployeeCumulativeKppComponent() {
                             <th className="text-right">Overall Cummalative Ratings: </th>
                             <td className="text-center">{cummulativeRatings}</td>
                         </tr>
+                        <tr>
+                        <th className="text-right">Total Months:</th>
+                        <td className="text-center">{totalMonths}</td>
+
+                    </tr>
                         <tr>
                             <th className="text-right">Average Cummalative Ratings:</th>
                             <td className="text-center">{avgCummulativeRatings}</td>
