@@ -5,6 +5,7 @@ export default function EmployeeCumulativeKppComponent() {
 
     const navigate = useNavigate();
 
+    const [isSuccess, setIsSuccess] = useState(true)
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
     const [totalMonths, setTotalMonths] = useState()
@@ -17,12 +18,20 @@ export default function EmployeeCumulativeKppComponent() {
 
     const [employees, setEmployees] = useState([])
 
-    useEffect(() => {
+    function clearDates(){
+        document.getElementById("fromDate").value = "";
+        document.getElementById("toDate").value = "";
+    }
+    const loadCumulativeData = ()=>{
+
+       
+
         EmployeeKppsService.getEmployeeKppReportDetailsByPaging().then((res) => {
 
 
             if (res.data.success) {
 
+                setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
@@ -33,6 +42,7 @@ export default function EmployeeCumulativeKppComponent() {
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
             }
             else {
+                setIsSuccess(false);
                 alert("Kpp is not approved for month");
 
             }
@@ -41,21 +51,31 @@ export default function EmployeeCumulativeKppComponent() {
             alert(err.response.data.details)
         });
 
+
+    }
+
+    useEffect(() => {
+        loadCumulativeData();
     }, []);
+
+
 
 
     const getKPPDetailsByDate = (e) => {
         EmployeeKppsService.getEmployeeKppReportByDates(fromDate, toDate).then((res) => {
             if (res.data.success) {
+                setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
                 setCummulativeRatings(res.data.responseData.cummulativeRatings)
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
                 setTotalMonths(res.data.responseData.totalMonths)
+                
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
             } else {
-                alert("Kpp is not found for month");
+                setIsSuccess(false);
+               // alert("Kpp is not found for month");
 
             }
 
@@ -82,19 +102,25 @@ export default function EmployeeCumulativeKppComponent() {
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
 
                     <div className="col-sm-2">
-                        <input type="date" className="form-control" defaultValue={fromDate} name="fromDate" onChange={(e) => setFromDate(e.target.value)} />
+                        <input type="date" className="form-control" id="fromDate" defaultValue={fromDate} name="fromDate" onChange={(e) => setFromDate(e.target.value)} />
                     </div>
 
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> To Date:</label>
                     <div className="col-sm-2">
-                        <input type="date" className="form-control" defaultValue={toDate} name="toDate" onChange={(e) => setToDate(e.target.value)} />
+                        <input type="date" className="form-control" id="toDate" defaultValue={toDate} name="toDate" onChange={(e) => setToDate(e.target.value)} />
                     </div>
                 </form>
                 <button type="submit" className="btn btn-primary" onClick={(e) => getKPPDetailsByDate(fromDate, toDate)}>Search</button>
+                <button type="submit" className="btn btn-primary col-sm-offset-1" onClick={(e) =>{
+             loadCumulativeData();
+             clearDates();
+
+                } }>Clear</button>
             </div>
 
 
             <div className="col-sm-8">
+            {isSuccess?
                 <table className="table table-bordered">
                     <thead>
                         <tr>
@@ -156,6 +182,7 @@ export default function EmployeeCumulativeKppComponent() {
                     </tbody>
 
                 </table>
+                :<h1>No Data Found</h1>}
             </div>
 
 
