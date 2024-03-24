@@ -52,7 +52,7 @@ export default function EmployeeCumulativeKppComponent() {
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
                 setCummulativeRatings(res.data.responseData.cummulativeRatings)
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
-
+                setTotalMonths(res.data.responseData.totalMonths)
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
             } else {
                 alert("Kpp is not found for month");
