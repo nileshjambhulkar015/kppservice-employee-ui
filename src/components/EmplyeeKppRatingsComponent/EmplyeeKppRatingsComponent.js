@@ -2,6 +2,7 @@ import { Form, Formik } from 'formik';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
+import { BASE_URL_API } from '../../services/EmployeeConstants';
 
 const EmplyeeKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
@@ -265,7 +266,7 @@ const EmplyeeKppRatingsComponent = () => {
                                 <div className="row">
                                     <div className="col-sm-10"></div>
                                     <div className="col-sm-2"><button type="submit" className="btn btn-success" disabled={kppMasterResponses?.hodKppStatus === "Approved"}> Submit</button>
-                                        <a href={`http://localhost:9091/report/in-progress-employee-kpp-status?empId=${Cookies.get('empId')}`}>
+                                        <a href={BASE_URL_API+`/report/in-progress-employee-kpp-status?empId=${Cookies.get('empId')}`}>
                                             <button type="button" className="btn btn-success col-sm-offset-1 " disabled={kppMasterResponses?.empKppStatus === "Pending"}
                                             > Download</button>
                                         </a>

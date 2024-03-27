@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import EmployeeKppsService from "../../services/EmployeeKppsService";
+import { BASE_URL_API } from "../../services/EmployeeConstants";
 export default function EmployeeCumulativeKppComponent() {
 
     const navigate = useNavigate();
@@ -147,7 +148,7 @@ export default function EmployeeCumulativeKppComponent() {
 
                                         <td className="text-center">
 
-                                            <a href={`http://localhost:9091/report/completed-employee-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
+                                            <a href={BASE_URL_API+`/report/completed-employee-kpp-status?empId=${employee.empId}&ekppMonth=${YYYY_MM_DD_Formater(employee.ekppMonth)}`}>
                                                 <button type="submit" className="btn btn-info">Download</button>
                                             </a>
                                         </td>
