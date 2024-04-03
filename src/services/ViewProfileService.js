@@ -9,7 +9,8 @@ class ViewProfileService {
 
     getEmployeeById(empId) {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API + '/byEmpId?empId=' + Cookies.get('empId'))
+            return axios.get(BASE_URL_API + '/employee/byEmpId?empId=' + Cookies.get('empId'))
+           // return axios.get(BASE_URL_API + '/byEmpId?empId=' + Cookies.get('empId'))
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
