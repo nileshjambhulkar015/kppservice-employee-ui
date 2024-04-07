@@ -16,6 +16,8 @@ class EmployeeKppsService {
         }
     }
 
+ 
+
     saveEmployeeKppDetails(todos) {
         if (null != Cookies.get('empId')) {
             return axios.put(BASE_URL_API + "/employee-kpp", todos)
@@ -58,20 +60,36 @@ class EmployeeKppsService {
         }
     }
 
-    getEVFileUpload(evFormData) {
+
+    getEvidenceFileDetails(ekppMonth) {
         if (null != Cookies.get('empId')) {
-            axios({
-                method: 'post',
-                url: BASE_URL_API+'/evidence',
-                data: evFormData,
-                headers: {'Content-Type': 'multipart/form-data' }
-             })
+    
+            return axios.get(BASE_URL_API+`/evidence/by-empid-evmonth?empId=${Cookies.get('empId')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
         }
     }
 
+    uploadEvidence =  (data) => {
+
+        if (null != Cookies.get('empId')) {
+            return axios.post(BASE_URL_API+"/evidence", data)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+    deleteEvidence =  (evMonth) => {
+
+        if (null != Cookies.get('empId')) {
+            return axios.delete(BASE_URL_API+`/evidence?empId=${Cookies.get('empId')}&evMonth=${evMonth}`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
 
 }
 

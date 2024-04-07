@@ -8,10 +8,12 @@ import axios from 'axios';
 const EmplyeeKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
     const [empRemark, setEmpRemark] = useState('');
-
+ const [isSuccess, setIsSuccess] = useState(true)
     const [totalAchivedWeight, setTotalAchivedWeight] = useState('');
     const [totalOverAllAchive, setTotalOverAllAchive] = useState('');
     const [totalOverallTaskComp, setTotalOverallTaskComp] = useState('');
+const[evidenceFileName, setEvidenceFileName] = useState('')
+    const [selectedFile, setSelectedFile] = useState()
 
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
@@ -52,18 +54,52 @@ const EmplyeeKppRatingsComponent = () => {
             setEmpRemark(res.data.empRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
         });
+
+        EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {
+         
+            setEvidenceFileName(res.data.responseData.evFileName);
+         
+        });
     }, []);
 
+    const selectFile =  (e) => {
+       setSelectedFile(e.target.files[0]);
+    }
     const uploadFile =  (e) => {
-        let file = e.target.files[0];
-        console.log(file);
-        
-        if (file) {
+       
+        if (selectedFile) {
           let data = new FormData();
-          data.append('multipartFile', file);
-          data.append('empId',5)
-           axios.post('http://localhost:9091/evidence', data);
+          data.append('multipartFile', selectedFile);
+          data.append('empId',Cookies.get('empId'))
+          
+          data.append('evMonth', ekppMonth)
+          EmployeeKppsService.uploadEvidence(data).then((res)=>{
+            if(res.data.success){
+                alert(res.data.responseMessage)
+                EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {
+         
+                    setEvidenceFileName(res.data.responseData.evFileName);
+                 
+                });
+               
+            } else {
+                alert(res.data.responseMessage)
+            }
+
+          });
+          // axios.post('http://localhost:9091/evidence', data);
         }
+    }
+
+    const deleteFile =  (ekppMonth) => {
+          EmployeeKppsService.deleteEvidence(ekppMonth).then((res)=>{
+            if(res.data.success){
+                alert(res.data.responseMessage)
+            } else {
+                alert(res.data.responseMessage)
+            }
+          });      
+        
     }
   
 
@@ -235,10 +271,24 @@ const EmplyeeKppRatingsComponent = () => {
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
-                                    <div className="col-sm-3">
+                                    <div className="col-sm-2">
                                         <input type="file" className="form-control" id="fileUpload"  multiple={false}
-                                        accept=".json,.csv,.txt,.text,application/json,text/csv,text/plain"  onChange={(e)=>uploadFile(e)}/>
-                                    </div>
+                                        accept=".pdf"  onChange={(e)=>selectFile(e)}/>
+                                       
+                                        </div>
+                                        <button type="submit" className="btn btn-info" onClick={(e) => uploadFile(e)}> Upload</button>
+                                        
+                                </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="reamrk">Uploaded File Name:</label>
+                                    <div className="col-sm-2">
+                                       {evidenceFileName}
+                                       <button type="submit" className="btn btn-danger col-sm-offset-1" onClick={(e) => deleteFile(ekppMonth)}> Delete</button>
+                                        </div>
+                                        
+                                       
                                 </div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="empRemark">Enter Remark:</label>
