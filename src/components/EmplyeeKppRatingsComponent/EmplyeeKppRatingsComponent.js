@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
 import { BASE_URL_API } from '../../services/EmployeeConstants';
+import axios from 'axios';
 
 const EmplyeeKppRatingsComponent = () => {
     const [ekppMonth, setEkppMonth] = useState('');
@@ -53,12 +54,18 @@ const EmplyeeKppRatingsComponent = () => {
         });
     }, []);
 
-
-    const handleExcel = () => {
-        EmployeeKppsService.getEmployeeKPPReport(Cookies.get('empId')).then(res => {
-            alert("Report generated");
-        });
+    const uploadFile =  (e) => {
+        let file = e.target.files[0];
+        console.log(file);
+        
+        if (file) {
+          let data = new FormData();
+          data.append('multipartFile', file);
+          data.append('empId',5)
+           axios.post('http://localhost:9091/evidence', data);
+        }
     }
+  
 
     return (
         <div className='container-fluid'>
@@ -229,7 +236,8 @@ const EmplyeeKppRatingsComponent = () => {
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
                                     <div className="col-sm-3">
-                                        <input type="file" className="form-control" id="deptName" />
+                                        <input type="file" className="form-control" id="fileUpload"  multiple={false}
+                                        accept=".json,.csv,.txt,.text,application/json,text/csv,text/plain"  onChange={(e)=>uploadFile(e)}/>
                                     </div>
                                 </div>
                                 <div className="form-group">
