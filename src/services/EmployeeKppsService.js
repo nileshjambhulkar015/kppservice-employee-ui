@@ -64,7 +64,7 @@ class EmployeeKppsService {
     getEvidenceFileDetails(ekppMonth) {
         if (null != Cookies.get('empId')) {
     
-            return axios.get(BASE_URL_API+`/evidence/by-empid-evmonth?empId=${Cookies.get('empId')}`)
+            return axios.get(BASE_URL_API+`/evidence/by-empid?empId=${Cookies.get('empId')}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -84,7 +84,7 @@ class EmployeeKppsService {
     deleteEvidence =  (evMonth) => {
 
         if (null != Cookies.get('empId')) {
-            return axios.delete(BASE_URL_API+`/evidence?empId=${Cookies.get('empId')}&evMonth=${evMonth}`)
+            return axios.delete(BASE_URL_API+`/evidence?empId=${Cookies.get('empId')}}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
