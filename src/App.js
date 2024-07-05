@@ -6,6 +6,8 @@ import EmployeeCumulativeKppComponent from "./components/EmployeeCumulativeKppCo
 import EmplyeeKppRatingsComponent from "./components/EmplyeeKppRatingsComponent/EmplyeeKppRatingsComponent";
 import ViewProfileComponent from './components/ViewProfileComponent/ViewProfileComponent';
 
+import ComplaintComponent from './components/ComplaintComponent/ComplaintComponent';
+
 function App() {
 
   //remove cookies when click on logout
@@ -36,6 +38,7 @@ function App() {
             <li><Link to="/viewKppReport">View Cumulative KPP</Link></li>
             <li><Link to="/updateEmployeeProfile">View Profile</Link></li>
             <li><Link to="/changePassword">Change Password</Link></li>
+            <li><Link to="/complaint">Complaint Management</Link></li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li><a href="#">Welcome: {Cookies.get('empEId')}</a></li>
@@ -50,6 +53,7 @@ function App() {
         <Route exact path="/viewKppReport" element={<EmployeeCumulativeKppComponent />}></Route>
         <Route exact path="/updateEmployeeProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
+        <Route exact path="/complaint" element={<ComplaintComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );
