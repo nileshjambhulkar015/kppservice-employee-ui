@@ -110,6 +110,28 @@ deleteEmployeeComplaintById(empCompId) {
 
     }
 
+        //when click on view button of UI
+        getComplaintTypeById(compTypeId) {
+            if (null != Cookies.get('empId')) {
+                return axios.get(BASE_URL + `/by-complaint-type-id?compTypeId=${compTypeId}`)
+            } else {
+                alert("You need to login first")
+                window.location.replace(LOGIN_UI_BASE_URL);
+            }
+    
+        }
+
+         //get site from company for region id
+     //Get all roles present in department table from designation for KPP
+     getComplaintTypeByIdDD(compTypeId) {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API+`/complaint-type/by-complaint-type-id?compTypeId=${compTypeId}`)  
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+        
+    }
 
 }
 
