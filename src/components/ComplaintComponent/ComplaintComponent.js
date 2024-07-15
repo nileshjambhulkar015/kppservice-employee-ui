@@ -36,11 +36,6 @@ export default function ComplaintComponent() {
             console.log(res.data.responseData.content)
         });
 
-        /* ComplaintService.getAllDepartmentFromComplaintType().then((res) => {
-             setDepartments(res.data); 
-             setDeptId(res.data?.[0].deptId)           
-                   
-         });*/
 
         ComplaintService.getAllDepartmentFromComplaintType().then((res) => {
             setDepartments(res.data);
