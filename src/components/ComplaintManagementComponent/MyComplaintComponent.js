@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import ComplaintService from '../../services/ComplaintService';
 
-export default function ComplaintComponent() {
+export default function MyComplaintComponent() {
 
 
     const [compId, setCompId] = useState('');

@@ -2,11 +2,14 @@ import Cookies from 'js-cookie';
 import React from "react";
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
-import EmployeeCumulativeKppComponent from "./components/EmployeeCumulativeKppComponent/EmployeeCumulativeKppComponent";
-import EmplyeeKppRatingsComponent from "./components/EmplyeeKppRatingsComponent/EmplyeeKppRatingsComponent";
-import ViewProfileComponent from './components/ViewProfileComponent/ViewProfileComponent';
 
-import ComplaintComponent from './components/ComplaintComponent/ComplaintComponent';
+
+import ViewProfileComponent from './components/ViewProfileComponent/ViewProfileComponent';
+import MyComplaintComponent from './components/ComplaintManagementComponent/MyComplaintComponent';
+import EmplyeeKppRatingsComponent from './components/EmplyeeKppManagementComponent/EmplyeeKppRatingsComponent';
+import EmployeeCumulativeKppComponent from './components/EmplyeeKppManagementComponent/EmployeeCumulativeKppComponent';
+
+
 
 function App() {
 
@@ -34,12 +37,35 @@ function App() {
           </div>
           <ul className="nav navbar-nav">
 
+            
+            <li className="dropdown">
+            <a className="dropdown-toggle" data-toggle="dropdown" href="#">KPP Management
+              <span className="caret"></span></a>
+            <ul className="dropdown-menu">
             <li><Link to="/employeekpp">Add KPP</Link></li>
             <li><Link to="/viewKppReport">View Cumulative KPP</Link></li>
+
+            </ul>
+          </li>
+
+
+            <li className="dropdown">
+            <a className="dropdown-toggle" data-toggle="dropdown" href="#">Complaint Management
+              <span className="caret"></span></a>
+            <ul className="dropdown-menu">
+              <li><Link to="/complaint">My Complaints</Link></li>
+              <li><Link to="/viewComplaint">Other's Pending Complaint</Link></li>
+              <li><Link to="/viewComplaint">Other's Resolve Complaint</Link></li>
+            </ul>
+          </li>
+
             <li><Link to="/updateEmployeeProfile">View Profile</Link></li>
             <li><Link to="/changePassword">Change Password</Link></li>
-            <li><Link to="/complaint">Complaint Management</Link></li>
+
+
+
           </ul>
+
           <ul className="nav navbar-nav navbar-right">
             <li><a href="#">Welcome: {Cookies.get('empEId')}</a></li>
             <li><a href="http://localhost:3008" onClick={() => removeCookies()}>Logout</a></li>
@@ -53,7 +79,7 @@ function App() {
         <Route exact path="/viewKppReport" element={<EmployeeCumulativeKppComponent />}></Route>
         <Route exact path="/updateEmployeeProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
-        <Route exact path="/complaint" element={<ComplaintComponent />}></Route>
+        <Route exact path="/complaint" element={<MyComplaintComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );
