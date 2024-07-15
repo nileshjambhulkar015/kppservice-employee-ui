@@ -148,7 +148,7 @@ export default function MyComplaintComponent() {
 
         <div>
             <div className="row">
-                <h2 className="text-center">Complaint List</h2>
+                <h2 className="text-center">My Complaint List</h2>
                 <div className="col-md-1"></div>
                 <div className="col-md-9">
                     <div className="row">
