@@ -8,6 +8,9 @@ import ViewProfileComponent from './components/ViewProfileComponent/ViewProfileC
 import MyComplaintComponent from './components/ComplaintManagementComponent/MyComplaintComponent';
 import EmplyeeKppRatingsComponent from './components/EmplyeeKppManagementComponent/EmplyeeKppRatingsComponent';
 import EmployeeCumulativeKppComponent from './components/EmplyeeKppManagementComponent/EmployeeCumulativeKppComponent';
+import OthersPendingComplaintComponent from './components/ComplaintManagementComponent/OthersPendingComplaintComponent';
+import OthersResolveComplaintComponent from './components/ComplaintManagementComponent/OthersResolveComplaintComponent';
+import OthersInProgressComplaintComponent from './components/ComplaintManagementComponent/OthersInProgressComplaintComponent';
 
 
 
@@ -53,9 +56,10 @@ function App() {
             <a className="dropdown-toggle" data-toggle="dropdown" href="#">Complaint Management
               <span className="caret"></span></a>
             <ul className="dropdown-menu">
-              <li><Link to="/complaint">My Complaints</Link></li>
-              <li><Link to="/viewComplaint">Other's Pending Complaint</Link></li>
-              <li><Link to="/viewComplaint">Other's Resolve Complaint</Link></li>
+              <li><Link to="/myComplaint">My Complaints</Link></li>
+              <li><Link to="/othersPendingComplaint">Other's Pending Complaint</Link></li>
+              <li><Link to="/othersInProgressComplaint">Other's In Progress Complaint</Link></li>
+              <li><Link to="/othersResolveComplaint">Other's Resolve Complaint</Link></li>
             </ul>
           </li>
 
@@ -79,7 +83,10 @@ function App() {
         <Route exact path="/viewKppReport" element={<EmployeeCumulativeKppComponent />}></Route>
         <Route exact path="/updateEmployeeProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
-        <Route exact path="/complaint" element={<MyComplaintComponent />}></Route>
+        <Route exact path="/myComplaint" element={<MyComplaintComponent />}></Route>
+        <Route exact path="/othersPendingComplaint" element={<OthersPendingComplaintComponent />}></Route>
+        <Route exact path="/othersInProgressComplaint" element={<OthersInProgressComplaintComponent />}></Route>
+        <Route exact path="/othersResolveComplaint" element={<OthersResolveComplaintComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );

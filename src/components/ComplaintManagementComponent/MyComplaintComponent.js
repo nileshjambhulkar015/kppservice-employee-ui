@@ -166,6 +166,7 @@ export default function MyComplaintComponent() {
                                     <th className="text-center">Sr No</th>
                                     <th className="text-center">Complaint No</th>
                                     <th className="text-center">Complaint Date</th>
+                                    <th className="text-center">Department Name</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
                                     <th className="text-center">Action</th>
@@ -179,6 +180,7 @@ export default function MyComplaintComponent() {
                                                 <td className="text-center">{index + 1}</td>
                                                 <td>{complaint.compId}</td>
                                                 <td>{complaint.compDate}</td>
+                                                <td>{complaint.deptName}</td>
                                                 <td>{complaint.compTypeName}</td>
                                                 <td>{complaint.compStatus}</td>
 
