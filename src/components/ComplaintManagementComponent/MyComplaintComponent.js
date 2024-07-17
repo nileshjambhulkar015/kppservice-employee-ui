@@ -22,6 +22,10 @@ export default function MyComplaintComponent() {
 
     const [deptId, setDeptId] = useState('');
 
+    
+    const [compResolveEmpName, setCompResolveEmpName] = useState('');
+    const [compResolveEmpEId, setCompResolveEmpEId] = useState('');
+
 
     const [complaints, setComplaints] = useState([])
 
@@ -107,6 +111,8 @@ export default function MyComplaintComponent() {
             setCompStatus(complaint.compStatus)
             setCompTypeName(complaint.compTypeName)
             setCompDesc(complaint.compDesc)
+            setCompResolveEmpName(complaint.compResolveEmpName);
+            setCompResolveEmpEId(complaint.compResolveEmpEId);
             setRemark(complaint.remark)
         }
         );
@@ -166,7 +172,7 @@ export default function MyComplaintComponent() {
                                     <th className="text-center">Sr No</th>
                                     <th className="text-center">Complaint No</th>
                                     <th className="text-center">Complaint Date</th>
-                                    <th className="text-center">Department Name</th>
+                                    <th className="text-center">Complaint Department</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
                                     <th className="text-center">Action</th>
@@ -180,7 +186,7 @@ export default function MyComplaintComponent() {
                                                 <td className="text-center">{index + 1}</td>
                                                 <td>{complaint.compId}</td>
                                                 <td>{complaint.compDate}</td>
-                                                <td>{complaint.deptName}</td>
+                                                <td>{complaint.compTypeDeptName}</td>
                                                 <td>{complaint.compTypeName}</td>
                                                 <td>{complaint.compStatus}</td>
 
@@ -359,6 +365,22 @@ export default function MyComplaintComponent() {
                                         {compStatus}
                                     </div>
                                 </div>
+
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Working By Employee Name:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpName}
+                                    </div>
+                                </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="hodKppStatus">Working By Employee Id:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpEId}
+                                    </div>
+                                </div>
+
 
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="deptName" >Remark:</label>

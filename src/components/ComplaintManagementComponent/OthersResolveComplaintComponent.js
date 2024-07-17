@@ -33,8 +33,9 @@ export default function OthersResolveComplaintComponent() {
     const [deptName, setDeptName] = useState('');
     const [desigId, setDesigId] = useState('');
     const [desigName, setDesigName] = useState('');
-
-
+    const [compResolveEmpName, setCompResolveEmpName] = useState('');
+    const [compResolveEmpEId, setCompResolveEmpEId] = useState('');
+    
 
     const [complaints, setComplaints] = useState([])
 
@@ -80,6 +81,9 @@ export default function OthersResolveComplaintComponent() {
             setCompTypeName(complaint.compTypeName)
             setCompDesc(complaint.compDesc)
             setRemark(complaint.remark)
+            setCompResolveEmpName(complaint.compResolveEmpName);
+            setCompResolveEmpEId(complaint.compResolveEmpEId);
+            
         }
         );
 
@@ -138,12 +142,9 @@ export default function OthersResolveComplaintComponent() {
                                     <th className="text-center">Role</th>
                                     <th className="text-center">Department</th>
                                     <th className="text-center">Designation</th>
-
-
                                     <th className="text-center">Complaint Date</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -275,6 +276,22 @@ export default function OthersResolveComplaintComponent() {
                                     <label className="control-label col-sm-3" htmlFor="hodKppStatus">Complaint Status:</label>
                                     <div className="col-sm-3">
                                         {compStatus}
+                                    </div>
+                                </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="hodKppStatus">Resolved By Employee Name:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpName}
+                                    </div>
+                                </div>
+
+                                
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="hodKppStatus">Resolved By Employee Id:</label>
+                                    <div className="col-sm-3">
+                                        {compResolveEmpEId}
                                     </div>
                                 </div>
 
