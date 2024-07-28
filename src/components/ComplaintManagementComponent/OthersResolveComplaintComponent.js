@@ -122,8 +122,8 @@ export default function OthersResolveComplaintComponent() {
         <div>
             <div className="row">
                 <h2 className="text-center">Resolve Complaint List</h2>
-                <div className="col-md-1"></div>
-                <div className="col-md-9">
+             
+                <div className="col-md-12">
                     <div className="row">
 
 
@@ -143,6 +143,7 @@ export default function OthersResolveComplaintComponent() {
                                     <th className="text-center">Department</th>
                                     <th className="text-center">Designation</th>
                                     <th className="text-center">Complaint Date</th>
+                                    <th className="text-center">Resolved Date</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
                                 </tr>
@@ -165,6 +166,7 @@ export default function OthersResolveComplaintComponent() {
 
 
                                                 <td>{complaint.compDate}</td>
+                                                <td>{complaint.compResolveDate}</td>
                                                 <td>{complaint.compTypeName}</td>
                                                 <td>{complaint.compStatus}</td>
 
@@ -179,7 +181,7 @@ export default function OthersResolveComplaintComponent() {
                     </div>
 
                 </div>
-                <div className="col-md-2"></div>
+               
 
             </div>
 
