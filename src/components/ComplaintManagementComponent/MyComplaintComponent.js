@@ -83,7 +83,8 @@ export default function MyComplaintComponent() {
         let desigId = Cookies.get('desigId')
         let empId = Cookies.get('empId')
         let empEId = Cookies.get('empEId')
-        let complaint = { empId, empEId, roleId, deptId, desigId, compTypeDeptId, compTypeId, compDesc, statusCd, employeeId };
+        let empEmailId = Cookies.get('empEmailId')
+        let complaint = { empId, empEId, roleId, deptId, desigId, compTypeDeptId, compTypeId, compDesc,empEmailId, statusCd, employeeId };
 
         ComplaintService.saveComplaintDetails(complaint).then(res => {
             console.log("res=", res.data)
@@ -257,7 +258,7 @@ export default function MyComplaintComponent() {
                                 <div className="form-group">
                                     <label className="control-label col-sm-4" htmlFor="compDesc">Enter Complaint Description:</label>
                                     <div className="col-sm-8">
-                                        <textarea row={50} cols={50} className="form-control" id="compDesc" placeholder="Enter Complaint Description here" onChange={(e) => setCompDesc(e.target.value)} />
+                                        <textarea rows={10} cols={50} className="form-control" id="compDesc" placeholder="Enter Complaint Description here" onChange={(e) => setCompDesc(e.target.value)} />
                                     </div>
                                 </div>
 
