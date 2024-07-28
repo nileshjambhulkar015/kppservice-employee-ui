@@ -276,7 +276,7 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                     <label className="control-label col-sm-4" htmlFor="reamrk">Upload Evidence:</label>
                                     <div className="col-sm-2">
                                         <input type="file" className="form-control" id="fileUpload"  multiple={false}
-                                        accept=".pdf"  onChange={(e)=>selectFile(e)}/>
+                                          onChange={(e)=>selectFile(e)}/>
                                        
                                         </div>
                                         <button type="button" className="btn btn-info" onClick={(e) => uploadFile(e)}> Upload</button>
