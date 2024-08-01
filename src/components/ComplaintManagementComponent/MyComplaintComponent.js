@@ -21,11 +21,14 @@ export default function MyComplaintComponent() {
     const [remark, setRemark] = useState('');
 
     const [deptId, setDeptId] = useState('');
-
+    const[empCompIdSearch, setEmpCompIdSearch] = useState();
+    const [isSuccess, setIsSuccess] = useState(true)
     
     const [compResolveEmpName, setCompResolveEmpName] = useState('');
     const [compResolveEmpEId, setCompResolveEmpEId] = useState('');
 
+    const [fromDate, setFromDate] = useState('')
+    const [toDate, setToDate] = useState('')
 
     const [complaints, setComplaints] = useState([])
 
@@ -33,11 +36,24 @@ export default function MyComplaintComponent() {
 
     const [departments, setDepartments] = useState([])
 
+
+    const [compFromDate, setCompFromDate] = useState('')
+    const [compToDate, setCompToDate] = useState('')
+    const [asDeptId, setAsDeptId] = useState('')
+    const [asCompId, setAsCompId] = useState('')
+    const [asCompStatus, setAsCompStatus] = useState('')
+
     //loading all department and roles while page loading at first time
     useEffect(() => {
+
+        ComplaintService.getAllDepartmentDetails().then((res) => {
+            setDepartments(res.data);
+        });
+
         ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
             setComplaints(res.data.responseData.content);
             console.log(res.data.responseData.content)
+            
         });
 
 
@@ -58,6 +74,29 @@ export default function MyComplaintComponent() {
 
     }, []);
 
+    const handleDepartmentChange = (value) => {
+        if(value=="Select Department"){
+            value=null;
+        }
+        setAsDeptId(value)
+    }
+
+   
+
+
+    // Advance search employee
+    const advSearchEmployeeComplaints = (e) => {
+let empId = Cookies.get('empId');
+
+        e.preventDefault()
+        let advComplaintSearch = { compFromDate, compToDate, empId,asDeptId,asCompId,asCompStatus };
+      
+        ComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
+            setComplaints(res.data.responseData.content);
+            console.log("Site added");
+        }
+        );
+    }
 
     //for region  change
     const handleDepartmentIdChange = (value) => {
@@ -149,22 +188,62 @@ export default function MyComplaintComponent() {
 
     }
 
+    const onComplaintStatusChangeHandler = (event) => {
+        setAsCompStatus(event);
+    };
 
+    const searchComplaintById = (e) => {
+        setEmpCompIdSearch(e.target.value)
+    
+        ComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
 
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+               // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+            }
+            else {
+                setIsSuccess(false);
+            }
+        });
+    }
+
+    
+    const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
+        const t = new Date(date)
+        const y = t.getFullYear()
+        const m = ('0' + (t.getMonth() + 1)).slice(-2)
+        const d = ('0' + t.getDate()).slice(-2)
+        return format.replace('YYYY', y).replace('MM', m).replace('DD', d)
+    }
     return (
 
         <div>
             <div className="row">
+            
                 <h2 className="text-center">My Complaint List</h2>
-                <div className="col-md-1"></div>
-                <div className="col-md-9">
+                
+                <div className="col-md-10">
+                    
+
                     <div className="row">
-
-                        <div className="col-sm-12" align="right">
-                            <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveComplaint">Add Complaint</button>
-
+                    <div className="col-sm-6">
+                        <div className="form-group">
+                            <form className="form-horizontal">
+                                <label className="control-label col-sm-3" htmlFor="empCompIdSearch">Enter Complaint Id:</label>
+                                <div className="col-sm-4">
+                                    <input type="text" className="form-control" id="empCompIdSearch" placeholder="Enter Complaint Id" value={empCompIdSearch} onChange={(e) => searchComplaintById(e)} />
+                                </div>
+                            </form>
+                            
                         </div>
                     </div>
+                    <div className="col-sm-5" align="right">
+                    <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveComplaint">Add Complaint</button>
+                        
+                        <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#advanceSearchEmployee">Advance Search</button>
+                    </div>
+                </div>
                     <div className="row">
 
                         <table className="table table-bordered">
@@ -173,6 +252,7 @@ export default function MyComplaintComponent() {
                                     <th className="text-center">Sr No</th>
                                     <th className="text-center">Complaint No</th>
                                     <th className="text-center">Complaint Date</th>
+                                    <th className="text-center">Complaint Resolved Date</th>
                                     <th className="text-center">Complaint Department</th>
                                     <th className="text-center">Complaint Type</th>
                                     <th className="text-center">Complaint Status</th>
@@ -187,6 +267,7 @@ export default function MyComplaintComponent() {
                                                 <td className="text-center">{index + 1}</td>
                                                 <td>{complaint.compId}</td>
                                                 <td>{complaint.compDate}</td>
+                                                <td>{complaint.compResolveDate}</td>
                                                 <td>{complaint.compTypeDeptName}</td>
                                                 <td>{complaint.compTypeName}</td>
                                                 <td>{complaint.compStatus}</td>
@@ -272,6 +353,94 @@ export default function MyComplaintComponent() {
 
                 </div>
             </div>
+
+            
+
+             {/* Modal for Advance search for employe comlaint details */}
+             <div className="modal fade" id="advanceSearchEmployee" role="dialog">
+             <form className="form-horizontal">
+                 <div className="modal-dialog">
+                     <div className="modal-content">
+                         <div className="modal-header">
+                             <button type="button" className="close" data-dismiss="modal">&times;</button>
+                             <h4 className="modal-title">Advance Search Complaint</h4>
+                         </div>
+                         <div className="modal-body">
+
+                             <div className="form-group">
+
+                             <div className="row">
+                             <label className="control-label col-sm-4" htmlFor="regionName">Complaint Statrt Date:</label>
+                             <div className="col-sm-5">
+                                 <div className="form-group">
+                                 <input type="date" className="form-control" id="compFromDate" defaultValue={compFromDate} name="compFromDate" onChange={(e) => setCompFromDate(e.target.value)} />                                 </div>
+                             </div>
+                         </div>
+
+                         <div className="row">
+                         <label className="control-label col-sm-4" htmlFor="regionName">Comlaint End Date:</label>
+                         <div className="col-sm-5">
+                             <div className="form-group">
+                             <input type="date" className="form-control" id="compToDate" defaultValue={compToDate} name="compToDate" onChange={(e) => setCompToDate(e.target.value)} />
+                             </div>
+                         </div>
+                     </div>
+
+
+
+
+                                 
+                                 <div className="row">
+                                     <label className="control-label col-sm-4" htmlFor="regionName">Department Name:</label>
+                                     <div className="col-sm-5">
+                                         <div className="form-group">
+                                             <select className="form-control" id="asDeptId" defaultValue={null} onChange={(e) => handleDepartmentChange(e.target.value)}>
+                                             <option>Select Department</option>
+                                                 {
+                                                     departments.map(
+                                                         department =>
+                                                             <option key={department.deptId} value={department.deptId}>{department.deptName}</option>
+                                                     )
+                                                 };
+
+                                             </select>
+                                         </div>
+                                     </div>
+                                 </div>
+
+
+
+
+                                 <div className="row">
+                                     <label className="control-label col-sm-4" htmlFor="companyName">Complaint Status:</label>
+                                     <div className="col-sm-5">
+                                         <div className="form-group">
+                                         <select className="form-control" id="asCompStatus" onChange={(e) => onComplaintStatusChangeHandler(e.target.value)} defaultValue={compStatus}>
+                                         <option>Select Complaint Status</option>
+                                         <option value="Pending">Pending</option>   
+                                         <option value="In Progress">In Progress</option>   
+                                         <option value="Resolved">Resolved</option>                                            
+                                            <option value="Reject">Reject</option>
+                                        </select>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+
+
+
+                         </div>
+                         <div className="modal-footer">
+                             
+                             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
+                             <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
+                         </div>
+                     </div>
+
+                 </div>
+             </form>
+         </div>
+
 
             {/* Modal for update user details */}
             <div className="modal fade" id="updateDepartment" role="dialog">
