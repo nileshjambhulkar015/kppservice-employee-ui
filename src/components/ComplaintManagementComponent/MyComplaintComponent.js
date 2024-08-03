@@ -88,20 +88,25 @@ export default function MyComplaintComponent() {
     // Advance search employee
     const advSearchEmployeeComplaints = (e) => {
         let empId = Cookies.get('empId');
-        
-        let empCompDeptId= Cookies.get('deptId')
+
+        let empCompDeptId = Cookies.get('deptId')
         e.preventDefault()
         let advComplaintSearch = { compFromDate, compToDate, empId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
 
         ComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
-            setComplaints(res.data.responseData.content);
-            console.log("Site added");
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+            }
+            else {
+                setIsSuccess(false);
+            }
         }
         );
     }
 
 
-    
+
 
     //for region  change
     const handleDepartmentIdChange = (value) => {
@@ -250,42 +255,43 @@ export default function MyComplaintComponent() {
                         </div>
                     </div>
                     <div className="row">
+                        {isSuccess ?
+                            <table className="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th className="text-center">Sr No</th>
+                                        <th className="text-center">Complaint No</th>
+                                        <th className="text-center">Complaint Date</th>
+                                        <th className="text-center">Complaint Resolved Date</th>
+                                        <th className="text-center">Complaint Department</th>
+                                        <th className="text-center">Complaint Type</th>
+                                        <th className="text-center">Complaint Status</th>
+                                        <th className="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        complaints.map(
+                                            (complaint, index) =>   //index is inbuilt variable of map started with 0
+                                                <tr key={complaint.empCompId}>
+                                                    <td className="text-center">{index + 1}</td>
+                                                    <td>{complaint.compId}</td>
+                                                    <td>{complaint.compDate}</td>
+                                                    <td>{complaint.compResolveDate}</td>
+                                                    <td>{complaint.compTypeDeptName}</td>
+                                                    <td>{complaint.compTypeName}</td>
+                                                    <td>{complaint.compStatus}</td>
 
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th className="text-center">Sr No</th>
-                                    <th className="text-center">Complaint No</th>
-                                    <th className="text-center">Complaint Date</th>
-                                    <th className="text-center">Complaint Resolved Date</th>
-                                    <th className="text-center">Complaint Department</th>
-                                    <th className="text-center">Complaint Type</th>
-                                    <th className="text-center">Complaint Status</th>
-                                    <th className="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    complaints.map(
-                                        (complaint, index) =>   //index is inbuilt variable of map started with 0
-                                            <tr key={complaint.empCompId}>
-                                                <td className="text-center">{index + 1}</td>
-                                                <td>{complaint.compId}</td>
-                                                <td>{complaint.compDate}</td>
-                                                <td>{complaint.compResolveDate}</td>
-                                                <td>{complaint.compTypeDeptName}</td>
-                                                <td>{complaint.compTypeName}</td>
-                                                <td>{complaint.compStatus}</td>
 
-
-                                                <td> <button type="submit" className="btn btn-info" data-toggle="modal" data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
-                                                    <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => deleteDepartmentById(complaint.empCompId)}>Delete</button>
-                                                    <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
-                                            </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
+                                                    <td> <button type="submit" className="btn btn-info" data-toggle="modal" data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
+                                                        <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => deleteDepartmentById(complaint.empCompId)}>Delete</button>
+                                                        <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
+                                                </tr>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                            : <h1>No Data Found</h1>}
                     </div>
 
                 </div>
@@ -438,11 +444,11 @@ export default function MyComplaintComponent() {
                             <div className="modal-footer">
 
                                 <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
-                             
-                                <a href={BASE_URL_API+`/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empId=${Cookies.get('empId')}&empCompDeptId=${Cookies.get('deptId')}&asCompTypeDeptId=${asCompTypeDeptId}&empCompId=${asCompId}&asCompStatus=${asCompStatus}`}>
-                                <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
-                            </a>
-                                
+
+                                <a href={BASE_URL_API + `/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empId=${Cookies.get('empId')}&empCompDeptId=${Cookies.get('deptId')}&asCompTypeDeptId=${asCompTypeDeptId}&empCompId=${asCompId}&asCompStatus=${asCompStatus}`}>
+                                    <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
+                                </a>
+
                                 <button type="button" className="btn btn-danger  col-sm-offset-1" data-dismiss="modal">Close</button>
                             </div>
                         </div>
