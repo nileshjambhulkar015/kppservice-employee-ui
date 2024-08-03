@@ -43,7 +43,7 @@ export default function MyComplaintComponent() {
     const [asDeptId, setAsDeptId] = useState('')
     const [asCompId, setAsCompId] = useState('')
     const [asCompStatus, setAsCompStatus] = useState('')
-
+    const [asCompTypeDeptId, setAsCompDeptId] = useState('')
     //loading all department and roles while page loading at first time
     useEffect(() => {
 
@@ -79,7 +79,7 @@ export default function MyComplaintComponent() {
         if (value == "Select Department") {
             value = null;
         }
-        setAsDeptId(value)
+        setAsCompDeptId(value)
     }
 
 
@@ -88,9 +88,10 @@ export default function MyComplaintComponent() {
     // Advance search employee
     const advSearchEmployeeComplaints = (e) => {
         let empId = Cookies.get('empId');
-
+        
+        let empCompDeptId= Cookies.get('deptId')
         e.preventDefault()
-        let advComplaintSearch = { compFromDate, compToDate, empId, asDeptId, asCompId, asCompStatus };
+        let advComplaintSearch = { compFromDate, compToDate, empId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
 
         ComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
             setComplaints(res.data.responseData.content);
@@ -437,8 +438,8 @@ export default function MyComplaintComponent() {
                             <div className="modal-footer">
 
                                 <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
-                                
-                                <a href={BASE_URL_API+`/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empId=${Cookies.get('empId')}&asDeptId=${asDeptId}&empCompId=${asCompId}&asCompStatus=${asCompStatus}`}>
+                             
+                                <a href={BASE_URL_API+`/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empId=${Cookies.get('empId')}&empCompDeptId=${Cookies.get('deptId')}&asCompTypeDeptId=${asCompTypeDeptId}&empCompId=${asCompId}&asCompStatus=${asCompStatus}`}>
                                 <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
                             </a>
                                 
