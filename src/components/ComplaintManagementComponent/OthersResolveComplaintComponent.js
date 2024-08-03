@@ -36,6 +36,9 @@ export default function OthersResolveComplaintComponent() {
     const [compResolveEmpName, setCompResolveEmpName] = useState('');
     const [compResolveEmpEId, setCompResolveEmpEId] = useState('');
     
+    
+    const [empCompIdSearch, setEmpCompIdSearch] = useState();
+    const [isSuccess, setIsSuccess] = useState(true)
 
     const [complaints, setComplaints] = useState([])
 
@@ -90,6 +93,23 @@ export default function OthersResolveComplaintComponent() {
     }
 
 
+    const searchComplaintById = (e) => {
+        setEmpCompIdSearch(e.target.value)
+
+        OthersResolveComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+            }
+            else {
+                setIsSuccess(false);
+            }
+        });
+    }
+
+
     const updateComplaint = (e) => {
 
         e.preventDefault()
@@ -124,10 +144,20 @@ export default function OthersResolveComplaintComponent() {
                 <h2 className="text-center">Resolve Complaint List</h2>
              
                 <div className="col-md-12">
-                    <div className="row">
-
+                <div className="row">
+                <div className="col-sm-6">
+                    <div className="form-group">
+                        <form className="form-horizontal">
+                            <label className="control-label col-sm-4" htmlFor="empCompIdSearch">Enter Complaint Id:</label>
+                            <div className="col-sm-4">
+                                <input type="text" className="form-control" id="empCompIdSearch" placeholder="Enter Complaint Id" value={empCompIdSearch} onChange={(e) => searchComplaintById(e)} />
+                            </div>
+                        </form>
 
                     </div>
+                </div>
+            </div>
+
                     <div className="row">
 
                         <table className="table table-bordered">

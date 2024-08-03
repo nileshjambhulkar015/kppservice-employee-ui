@@ -10,6 +10,8 @@ export default function OthersInProgressComplaintComponent() {
 
 
     const [compId, setCompId] = useState('');
+    const [empCompIdSearch, setEmpCompIdSearch] = useState();
+    const [isSuccess, setIsSuccess] = useState(true)
 
     const [compTypeDeptId, setCompTypeDeptId] = useState('');
 
@@ -54,6 +56,22 @@ export default function OthersInProgressComplaintComponent() {
         });
 
     }, []);
+
+    const searchComplaintById = (e) => {
+        setEmpCompIdSearch(e.target.value)
+
+        OthersInProgressComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+            }
+            else {
+                setIsSuccess(false);
+            }
+        });
+    }
 
 
     const getComplaintById = (e) => {
@@ -124,12 +142,22 @@ export default function OthersInProgressComplaintComponent() {
             <div className="row">
                 <h2 className="text-center">In Progress Complaint List</h2>
                 <div className="col-md-1"></div>
-                <div className="col-md-9">
-                    <div className="row">
-
+                <div className="col-md-10">
+                <div className="row">
+                <div className="col-sm-6">
+                    <div className="form-group">
+                        <form className="form-horizontal">
+                            <label className="control-label col-sm-4" htmlFor="empCompIdSearch">Enter Complaint Id:</label>
+                            <div className="col-sm-4">
+                                <input type="text" className="form-control" id="empCompIdSearch" placeholder="Enter Complaint Id" value={empCompIdSearch} onChange={(e) => searchComplaintById(e)} />
+                            </div>
+                        </form>
 
                     </div>
-                    <div className="row">
+                </div>
+            </div>
+
+                <div className="row">
 
                         <table className="table table-bordered">
                             <thead>

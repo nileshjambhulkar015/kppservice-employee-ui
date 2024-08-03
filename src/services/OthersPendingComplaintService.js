@@ -34,6 +34,17 @@ class OthersPendingComplaintService {
 
     }
 
+     //search complaint by complaint id
+     getEmployeeCompaintsByComplaintId(empCompIdSearch) {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API + `/complaint/complaint-search?compStatus=Pending&compId=${empCompIdSearch}&compTypeDeptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
+
        //when click on view button of UI
        getComplaintById(empCompId) {
         if (null != Cookies.get('empId')) {

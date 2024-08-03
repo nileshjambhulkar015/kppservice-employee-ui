@@ -23,6 +23,16 @@ class OthersInProgressComplaintService {
         }
     }
 
+    //search complaint by complaint id
+    getEmployeeCompaintsByComplaintId(empCompIdSearch) {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL_API + `/complaint/complaint-search?compStatus=In Progress&compId=${empCompIdSearch}&compTypeDeptId=${Cookies.get('deptId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+    }
+
     // search department by its name
     getDepartmentDetailsByDeptNamePaging(deptName) {
         if (null != Cookies.get('empId')) {
