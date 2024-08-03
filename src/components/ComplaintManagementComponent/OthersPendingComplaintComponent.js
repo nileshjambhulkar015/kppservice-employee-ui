@@ -51,7 +51,7 @@ export default function OthersPendingComplaintComponent() {
     const [asCompId, setAsCompId] = useState('')
     const [asCompStatus, setAsCompStatus] = useState('')
     const [empCompDeptId, setEmpCompDeptId] = useState('')
-    
+
     //loading all department and roles while page loading at first time
     useEffect(() => {
         OthersPendingComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
@@ -74,18 +74,24 @@ export default function OthersPendingComplaintComponent() {
         setEmpCompDeptId(value)
     }
 
-     // Advance search employee
-     const advSearchEmployeeComplaints = (e) => {
+    // Advance search employee
+    const advSearchEmployeeComplaints = (e) => {
         let empId = null;
         let asCompStatus = 'Pending';
-        let asCompTypeDeptId= Cookies.get('deptId')
+        let asCompTypeDeptId = Cookies.get('deptId')
 
         e.preventDefault()
-        let advComplaintSearch = {compFromDate, compToDate, empId,empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
+        let advComplaintSearch = { compFromDate, compToDate, empId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
 
         OthersPendingComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
-            setComplaints(res.data.responseData.content);
-            console.log("Site added");
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+                
+            }
+            else {
+                setIsSuccess(false);
+            }
         }
         );
     }
@@ -165,7 +171,7 @@ export default function OthersPendingComplaintComponent() {
     }
 
 
-   
+
 
 
 
@@ -178,7 +184,7 @@ export default function OthersPendingComplaintComponent() {
                 <h2 className="text-center">Other's Pending Complaint List</h2>
 
                 <div className="col-md-11">
-                
+
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="form-group">
@@ -188,7 +194,7 @@ export default function OthersPendingComplaintComponent() {
                                         <input type="text" className="form-control" id="empCompIdSearch" placeholder="Enter Complaint Id" value={empCompIdSearch} onChange={(e) => searchComplaintById(e)} />
                                     </div>
                                     <div className="col-sm-7" align="right">
-                                    <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#advanceSearchEmployee">Advance Search</button>
+                                        <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#advanceSearchEmployee">Advance Search</button>
                                     </div>
                                 </form>
 
@@ -197,7 +203,7 @@ export default function OthersPendingComplaintComponent() {
                     </div>
 
                     <div className="row">
-
+                    {isSuccess?
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
@@ -247,6 +253,7 @@ export default function OthersPendingComplaintComponent() {
                                 }
                             </tbody>
                         </table>
+                        :<h1>No Data Found</h1>}
                     </div>
 
                 </div>
@@ -254,7 +261,7 @@ export default function OthersPendingComplaintComponent() {
 
             </div>
 
-            
+
 
             {/* Modal for Advance search for employe comlaint details */}
             <div className="modal fade" id="advanceSearchEmployee" role="dialog">
@@ -317,7 +324,7 @@ export default function OthersPendingComplaintComponent() {
 
                                 <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
 
-                               
+
                                 <a href={BASE_URL_API + `/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empCompDeptId=${empCompDeptId}&asCompTypeDeptId=${Cookies.get('deptId')}&empCompId=${asCompId}&asCompStatus=Pending`}>
                                     <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
                                 </a>
