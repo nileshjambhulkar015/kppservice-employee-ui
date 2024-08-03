@@ -51,7 +51,7 @@ export default function OthersResolveComplaintComponent() {
     const [compToDate, setCompToDate] = useState('')
     const [asDeptId, setAsDeptId] = useState('')
     const [asCompId, setAsCompId] = useState('')
-    const [asCompStatus, setAsCompStatus] = useState('')
+    const [asCompTypeDeptId, setAsCompTypeDeptId] = useState('')
     const [empCompDeptId, setEmpCompDeptId] = useState('')
 
     //loading all department and roles while page loading at first time
@@ -81,19 +81,21 @@ export default function OthersResolveComplaintComponent() {
     // Advance search employee
     const advSearchEmployeeComplaints = (e) => {
         let asCompResolveEmpId = Cookies.get('empId');
+        
         let asCompStatus = 'Resolved';
         let asCompTypeDeptId = Cookies.get('deptId')
 
+        let empId="";
         e.preventDefault()
-        let advComplaintSearch = { compFromDate, compToDate, asCompResolveEmpId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
+        let advComplaintSearch = { empId,compFromDate, compToDate, asCompResolveEmpId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
 
         OthersResolveComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
-            if (res.data.success) {
+            if (res.data.success) {              
+                setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
             }
             else {
                 setIsSuccess(false);
-
             }
         }
         );
@@ -211,7 +213,7 @@ export default function OthersResolveComplaintComponent() {
                     </div>
 
                     <div className="row">
-
+                    {isSuccess?
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
@@ -260,6 +262,7 @@ export default function OthersResolveComplaintComponent() {
                                 }
                             </tbody>
                         </table>
+                        :<h1>No Data Found</h1>}
                     </div>
 
                 </div>
