@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 
 import ComplaintService from '../../services/ComplaintService';
+import { BASE_URL_API } from '../../services/EmployeeConstants';
 
 export default function MyComplaintComponent() {
 
@@ -97,6 +98,9 @@ export default function MyComplaintComponent() {
         }
         );
     }
+
+
+    
 
     //for region  change
     const handleDepartmentIdChange = (value) => {
@@ -223,7 +227,7 @@ export default function MyComplaintComponent() {
 
                 <h2 className="text-center">My Complaint List</h2>
 
-                <div className="col-md-10">
+                <div className="col-md-11">
 
 
                     <div className="row">
@@ -433,7 +437,12 @@ export default function MyComplaintComponent() {
                             <div className="modal-footer">
 
                                 <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
-                                <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
+                                
+                                <a href={BASE_URL_API+`/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empId=${Cookies.get('empId')}&asDeptId=${asDeptId}&empCompId=${asCompId}&asCompStatus=${asCompStatus}`}>
+                                <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
+                            </a>
+                                
+                                <button type="button" className="btn btn-danger  col-sm-offset-1" data-dismiss="modal">Close</button>
                             </div>
                         </div>
 

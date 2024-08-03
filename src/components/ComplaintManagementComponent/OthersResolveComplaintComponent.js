@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import OthersResolveComplaintService from '../../services/OthersResolveComplaintService';
+import { BASE_URL_API } from '../../services/EmployeeConstants';
 
 
 
@@ -317,7 +318,11 @@ export default function OthersResolveComplaintComponent() {
             <div className="modal-footer">
 
                 <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeComplaints(e)}>Search</button>
-                <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
+                
+                <a href={BASE_URL_API+`/complaint/download-employee-complaint?compFromDate=${compFromDate}&compToDate=${compToDate}&empId=${Cookies.get('empId')}&asDeptId=${asDeptId}&empCompId=${asCompId}&asCompStatus=Resolved`}>
+                                <button type="button" className="btn btn-success col-sm-offset-1 "> Download</button>
+                            </a>
+                <button type="button" className="btn btn-danger col-sm-offset-1" data-dismiss="modal">Close</button>
             </div>
         </div>
 
