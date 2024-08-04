@@ -100,6 +100,22 @@ export default function OthersInProgressComplaintComponent() {
         );
     }
 
+    const clearSearchData = () => {
+        
+        OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+            }
+            else {
+                setIsSuccess(false);
+            }
+
+        });
+
+    }
+
+
     const searchComplaintById = (e) => {
         setEmpCompIdSearch(e.target.value)
 
@@ -196,6 +212,7 @@ export default function OthersInProgressComplaintComponent() {
                                     </div>
                                     <div className="col-sm-7" align="right">
                                         <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#advanceSearchEmployee">Advance Search</button>
+                                        <button type="button" className="btn btn-primary col-sm-offset-1" onClick={() => clearSearchData()}>Clear Search</button>
                                     </div>
                                 </form>
 

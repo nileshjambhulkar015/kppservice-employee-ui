@@ -75,6 +75,21 @@ export default function MyComplaintComponent() {
 
     }, []);
 
+    const clearSearchData = () => {
+        
+        ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
+                setComplaints(res.data.responseData.content);
+            }
+            else {
+                setIsSuccess(false);
+            }
+
+        });
+
+    }
+
     const handleDepartmentChange = (value) => {
         if (value == "Select Department") {
             value = null;
@@ -252,6 +267,7 @@ export default function MyComplaintComponent() {
                             <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveComplaint">Add Complaint</button>
 
                             <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#advanceSearchEmployee">Advance Search</button>
+                            <button type="button" className="btn btn-primary col-sm-offset-1" onClick={() => clearSearchData()}>Clear Search</button>
                         </div>
                     </div>
                     <div className="row">
