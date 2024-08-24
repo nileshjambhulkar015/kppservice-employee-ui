@@ -119,12 +119,12 @@ export default function MeetingMasterComponent() {
 
         <div>
             <div className="row">
-                <h2 className="text-center">Meeting List</h2>
+                <h2 className="text-center">Bulletin List</h2>
 
                 <div className="col-md-12">
                     <div className="row">
                         <div className="col-sm-11" align="right">
-                            <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveMeeting">Add Meeting</button>
+                            <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveMeeting">Add Bulletin</button>
 
                         </div>
                     </div>

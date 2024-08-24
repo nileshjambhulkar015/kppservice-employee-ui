@@ -185,7 +185,8 @@ export default function MyComplaintComponent() {
     }
 
 
-    const deleteDepartmentById = (e) => {
+    const deleteComplaintById = (e) => {
+        if (window.confirm("Do you want to delete this complaint ?")) {
         ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
             ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
                 setComplaints(res.data.responseData.content);
@@ -194,6 +195,10 @@ export default function MyComplaintComponent() {
             console.log("Department deleted");
         }
         );
+    } else {
+        // User clicked Cancel
+        console.log("User canceled the action.");
+    }
     }
 
     const updateComplaint = (e) => {
@@ -300,7 +305,7 @@ export default function MyComplaintComponent() {
 
 
                                                     <td> <button type="submit" className="btn btn-info" data-toggle="modal" data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
-                                                        <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => deleteDepartmentById(complaint.empCompId)}>Delete</button>
+                                                        <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => deleteComplaintById(complaint.empCompId)}>Delete</button>
                                                         <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
                                                 </tr>
                                         )

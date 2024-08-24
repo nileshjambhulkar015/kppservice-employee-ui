@@ -23,7 +23,7 @@ export default function UpdateDoBComponent() {
            <form className="form-horizontal">
                               
                                 <div className="form-group">
-                                    <label className="control-label col-sm-4" htmlFor="userPassword">Enter Password :</label>
+                                    <label className="control-label col-sm-4" htmlFor="userPassword">Select Date Of Birth :</label>
                                     <div className="col-sm-4">
                                     <input type="date" className="form-control" defaultValue={empDob} name="empDob" onChange={(e) => setEmpDob(e.target.value)} />
                                     </div>
