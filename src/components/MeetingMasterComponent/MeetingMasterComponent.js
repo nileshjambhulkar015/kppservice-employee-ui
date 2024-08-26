@@ -3,6 +3,11 @@ import React, { useEffect, useState } from "react";
 import MeetingMasterService from '../../services/MeetingMasterService';
 export default function MeetingMasterComponent() {
 
+    const [meetFromDate, setMeetFromDate] = useState('');
+    const [meetToDate, setMeetToDate] = useState('');
+    const [asMeetStatus, setAsMeetStatus] = useState('');
+    const [isSuccess, setIsSuccess] = useState(true)
+    
     const [meetId, setMeetId] = useState('');
     const [meetStartDate, setMeetStartDate] = useState('');
     const [meetEndDate, setMeetEndDate] = useState('');
@@ -22,17 +27,29 @@ export default function MeetingMasterComponent() {
     const [meetStatus, setMeetStatus] = useState('');
     const [remark, setRemark] = useState('');
 
-
+    
 
     const [meetings, setMeetings] = useState([])
 
+    const loadAllMeetingData = ()=>{
+        MeetingMasterService.getEmployeeMeetingByPaging().then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
+            setMeetings(res.data.responseData.content);
+        }
+        else {
+            setIsSuccess(false);
+        }
+        });
+    }
     //loading all department and roles while page loading at first time
     useEffect(() => {
-        MeetingMasterService.getEmployeeMeetingByPaging().then((res) => {
-            setMeetings(res.data.responseData.content);
-            console.log(res.data.responseData.content)
-        });
+        loadAllMeetingData();
     }, []);
+
+    const onMeetingStatusChangeHandler = (event) => {
+        setAsMeetStatus(event);
+    };
 
     const showMeetingById = (e) => {
 
@@ -72,15 +89,29 @@ export default function MeetingMasterComponent() {
         let meeting = { meetId, meetStatus};
 
         MeetingMasterService.cancelEmployeeMeeting(meeting).then(res => {
-            MeetingMasterService.getEmployeeMeetingByPaging().then((res) => {
-                setMeetings(res.data.responseData.content);
-                console.log(res.data.responseData.content)
-            });
-            console.log("Meeting cancel");
+            loadAllMeetingData();
         }
         );
     });
 
+    }
+
+    
+    // Advance search employee
+    const advSearchEmployeeMeeting = (e) => {
+        e.preventDefault()
+        let advMeetingSearch = { meetFromDate, meetToDate, asMeetStatus };
+
+        MeetingMasterService.advanceSearchMeetingDetails(advMeetingSearch).then(res => {
+            if (res.data.success) {
+                setIsSuccess(true);
+                setMeetings(res.data.responseData.content);
+            }
+            else {
+                setIsSuccess(false);
+            }
+        }
+        );
     }
 
 
@@ -119,17 +150,18 @@ export default function MeetingMasterComponent() {
 
         <div>
             <div className="row">
-                <h2 className="text-center">Bulletin List</h2>
+                <h2 className="text-center">News / Meeting List</h2>
 
                 <div className="col-md-12">
                     <div className="row">
-                        <div className="col-sm-11" align="right">
-                            <button type="button" className="btn btn-primary " data-toggle="modal" data-target="#saveMeeting">Add Bulletin</button>
+                        <div className="col-sm-11">
+                        <button type="button" className="btn btn-primary col-sm-offset-8" data-toggle="modal" data-target="#advanceSearchMeeting">Advance Search</button>
+                            <button type="button" className="btn btn-primary col-sm-offset-1" data-toggle="modal" data-target="#saveMeeting">Add News / Meeting</button>
 
                         </div>
                     </div>
                     <div className="row">
-
+                    {isSuccess?
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
@@ -171,9 +203,72 @@ export default function MeetingMasterComponent() {
                                 }
                             </tbody>
                         </table>
+                        :<h4><br></br><br></br>No Data Found</h4>}
                     </div>
 
                 </div>
+
+                 {/* Modal for Advance search for employe comlaint details */}
+            <div className="modal fade" id="advanceSearchMeeting" role="dialog">
+            <form className="form-horizontal">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" data-dismiss="modal">&times;</button>
+                            <h4 className="modal-title">Advance Search Meeting</h4>
+                        </div>
+                        <div className="modal-body">
+
+                            <div className="form-group">
+
+                                <div className="row">
+                                    <label className="control-label col-sm-4" htmlFor="meetFromDate">Meeting Start Date:</label>
+                                    <div className="col-sm-5">
+                                        <div className="form-group">
+                                            <input type="date" className="form-control" id="meetFromDate" defaultValue={meetFromDate} name="meetFromDate" onChange={(e) => setMeetFromDate(e.target.value)} />                                 </div>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <label className="control-label col-sm-4" htmlFor="regionName">Meeting End Date:</label>
+                                    <div className="col-sm-5">
+                                        <div className="form-group">
+                                            <input type="date" className="form-control" id="meetToDate" defaultValue={meetToDate} name="meetToDate" onChange={(e) => setMeetToDate(e.target.value)} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <label className="control-label col-sm-4" htmlFor="asMeetStatus">Meeting Status:</label>
+                                    <div className="col-sm-5">
+                                        <div className="form-group">
+                                            <select className="form-control" id="asMeetStatus" onChange={(e) => onMeetingStatusChangeHandler(e.target.value)} defaultValue={asMeetStatus}>
+                                                <option>Select Complaint Status</option>
+                                                <option value="Pending">Pending</option>
+                                                <option value="Cancel">Cancel</option>        
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div className="modal-footer">
+
+                            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchEmployeeMeeting(e)}>Search</button>
+
+                           
+
+                            <button type="button" className="btn btn-danger  col-sm-offset-1" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
 
 
                 {/* Modal for save department details */}
@@ -182,7 +277,7 @@ export default function MeetingMasterComponent() {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
-                                <h4 className="modal-title">Add Department</h4>
+                                <h4 className="modal-title">Add News / Meeting / Anouncement</h4>
                             </div>
                             <div className="modal-body">
                                 <form className="form-horizontal">

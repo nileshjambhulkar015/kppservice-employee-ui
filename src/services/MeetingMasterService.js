@@ -50,6 +50,17 @@ class MeetingMasterService {
 
     }
 
+     //advance search of employee
+     advanceSearchMeetingDetails(advSearchMeeting) {
+        if (null != Cookies.get('empId')) {
+            return axios.post(BASE_URL+"/meeting-adv-search?page=0&size=1220", advSearchMeeting)
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }
+
+    }
+    
 }
 
 export default new MeetingMasterService()
