@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { BASE_URL_API, LOGIN_UI_BASE_URL } from "./EmployeeConstants";
+import { BASE_URL_API, LOGIN_UI_BASE_URL } from "./URLConstants";
 
 
 //const BASE_URL = KPP_API_BASE_URL + `/employee-key-perform-parameter/kpp?roleId=${Cookies.get('roleId')}&deptId=${Cookies.get('deptId')}&desigId=${Cookies.get('desigId')}&statusCdEnum=A`;

@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import OthersResolveComplaintService from '../../services/OthersResolveComplaintService';
 import OthersInProgressComplaintService from '../../services/OthersInProgressComplaintService';
-import { BASE_URL_API } from '../../services/EmployeeConstants';
+import { BASE_URL_API } from '../../services/URLConstants';
 
 
 

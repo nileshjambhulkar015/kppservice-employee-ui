@@ -2,7 +2,7 @@ import { Form, Formik } from 'formik';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
-import { BASE_URL_API } from '../../services/EmployeeConstants';
+import { BASE_URL_API } from '../../services/URLConstants';
 import axios from 'axios';
 
 const EmplyeeKppRatingsComponent = () => {

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 
 import ComplaintService from '../../services/ComplaintService';
-import { BASE_URL_API } from '../../services/EmployeeConstants';
+import { BASE_URL_API } from '../../services/URLConstants';
 
 export default function MyComplaintComponent() {
 

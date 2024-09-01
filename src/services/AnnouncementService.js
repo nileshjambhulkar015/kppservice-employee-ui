@@ -3,14 +3,14 @@ import Cookies from 'js-cookie';
 import { BASE_URL_API, LOGIN_UI_BASE_URL } from "./URLConstants";
 
 
-const BASE_URL = BASE_URL_API+"/employee-meeting";
+const BASE_URL = BASE_URL_API+"/announcement";
 
-class MeetingMasterService {
+class AnnouncementService {
 
 
-    getEmployeeMeetingByPaging() {
+    getAnnouncementByPaging() {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API+"/employee-meeting/search?page=0&size=1220");
+            return axios.get(BASE_URL_API+"/announcement/search?statusCd=A&page=0&size=200");
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -18,9 +18,9 @@ class MeetingMasterService {
     }
 
      //when click on view button of UI
-     getMeetingById(meetingId) {
+     getAnnouncementById(meetingId) {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL + `/by-meeting-id?meetingId=${meetingId}&statusCd=A`)
+            return axios.get(BASE_URL + `/by-announ-id?announId=${meetingId}&statusCd=A`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -29,7 +29,7 @@ class MeetingMasterService {
     }
 
     //Save employee meeting
-    saveEmployeeMeetingDetails(meeting) {
+    saveAnnouncementDetails(meeting) {
         if (null != Cookies.get('empId')) {
             return axios.post(BASE_URL, meeting)
         } else {
@@ -40,9 +40,9 @@ class MeetingMasterService {
     }
 
     
-    cancelEmployeeMeeting(meeting) {
+    cancelAnnouncement(meeting) {
         if (null != Cookies.get('empId')) {
-            return axios.put(BASE_URL + "/cancel-meeting", meeting)
+            return axios.put(BASE_URL + "/cancel-announ", meeting)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -50,17 +50,30 @@ class MeetingMasterService {
 
     }
 
-     //advance search of employee
-     advanceSearchMeetingDetails(advSearchMeeting) {
+    //advance search of employee
+    advanceSearchAnnouncementDetails(advSearchAnnouncement) {
         if (null != Cookies.get('empId')) {
-            return axios.post(BASE_URL+"/meeting-adv-search?page=0&size=1220", advSearchMeeting)
+            return axios.post(BASE_URL+"/announ-adv-search?page=0&size=200", advSearchAnnouncement)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
         }
 
     }
+
     
+    getAllAnnouncementTypeFromAnnoun() {
+        if (null != Cookies.get('empId')) {
+            return axios.get(BASE_URL +"/dd-announ-all?statusCd=A")
+        } else {
+            alert("You need to login first")
+            window.location.replace(LOGIN_UI_BASE_URL);
+        }       
+    }
+
+    //announcement type from 
+    
+
 }
 
-export default new MeetingMasterService()
+export default new AnnouncementService()

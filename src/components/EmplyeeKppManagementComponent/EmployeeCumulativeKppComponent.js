@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import EmployeeKppsService from "../../services/EmployeeKppsService";
-import { BASE_URL_API } from "../../services/EmployeeConstants";
+import { BASE_URL_API } from "../../services/URLConstants";
 export default function EmployeeCumulativeKppComponent() {
 
     const navigate = useNavigate();

@@ -13,7 +13,7 @@ import OthersResolveComplaintComponent from './components/ComplaintManagementCom
 import OthersInProgressComplaintComponent from './components/ComplaintManagementComponent/OthersInProgressComplaintComponent';
 import MeetingMasterComponent from './components/MeetingMasterComponent/MeetingMasterComponent';
 import UpdateDoBComponent from './components/UpdateDoBComponent/UpdateDoBComponent';
-
+import AnnouncementComponent from "./components/AnnouncementComponent/AnnouncementComponent";
 
 
 function App() {
@@ -65,7 +65,7 @@ function App() {
             </ul>
           </li>
 
-          <li><Link to="/meetingMaster">Meeting Master</Link></li>
+          <li><Link to="/announcement">Announcement Master</Link></li>
             <li><Link to="/updateEmployeeProfile">View Profile</Link></li>
             <li><Link to="/updateDOB">Update Date of Birth</Link></li>
             <li><Link to="/changePassword">Change Password</Link></li>
@@ -91,9 +91,10 @@ function App() {
         <Route exact path="/othersPendingComplaint" element={<OthersPendingComplaintComponent />}></Route>
         <Route exact path="/othersInProgressComplaint" element={<OthersInProgressComplaintComponent />}></Route>
         <Route exact path="/othersResolveComplaint" element={<OthersResolveComplaintComponent />}></Route>
-        updateDOB
+        
         <Route exact path="/meetingMaster" element={<MeetingMasterComponent />}></Route>
         <Route exact path="/updateDOB" element={<UpdateDoBComponent />}></Route>
+        <Route exact path="/announcement" element={<AnnouncementComponent />}></Route>
       </Routes>
     </BrowserRouter>
   );
