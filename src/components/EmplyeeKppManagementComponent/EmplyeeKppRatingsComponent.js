@@ -6,7 +6,11 @@ import { BASE_URL_API } from '../../services/URLConstants';
 import axios from 'axios';
 
 const EmplyeeKppRatingsComponent = () => {
+    // Format the date to YYYY-MM-DD
+ 
     const [ekppMonth, setEkppMonth] = useState('');
+
+    
     const [empRemark, setEmpRemark] = useState('');
  const [isSuccess, setIsSuccess] = useState(true)
     const [totalAchivedWeight, setTotalAchivedWeight] = useState('');
@@ -25,7 +29,6 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
         const d = ('0' + t.getDate()).slice(-2)
         return format.replace('YYYY', y).replace('MM', m).replace('DD', d)
     }
-
 
 
     const sumTotalAchivedWeight = (empKpps) => {
@@ -51,7 +54,15 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
 
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
+         if('null'!=res.data.ekppMonth){
             setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
+         } else{
+            const newDate = new Date();           
+            // Format to YYYY-MM-DD
+            const formattedDate = newDate.toISOString().split('T')[0];            
+            setEkppMonth(formattedDate);
+           
+         }
             setKppMasterResponses(res.data);
             setEmpRemark(res.data.empRemark)
             setKppDetailsResponses(res.data.kppStatusDetails)
@@ -63,6 +74,8 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
          
         });
     }, []);
+
+    console.log("ekppMonth :", ekppMonth)
 
     const selectFile =  (e) => {
        setSelectedFile(e.target.files[0]);
@@ -104,7 +117,7 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
         
     }
   
-console.log("kppDetailsResponses : ", kppDetailsResponses)
+
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -135,9 +148,9 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                     {({ values, setFieldValue }) => {
                         
                         const handleTodoChange = (e, i, kppId, kppOverallWeightage, empOverallTaskComp, kppRating1) => {
-                            console.log("e.target.value : ", e.target.value)
+                  
                             const field = e.target.name?.split(".")[1];
-                            console.log("kppDetailsResponses[i] =", i)
+                           
                            
                             kppDetailsResponses[i] = {
                                  
@@ -169,7 +182,7 @@ console.log("kppDetailsResponses : ", kppDetailsResponses)
                                 <div className="form-group">
                                     <label className="control-label col-sm-1 "  >KPP Date:</label>
                                     <div className="col-sm-2">
-                                        <input type="date" className="form-control" defaultValue={ekppMonth} name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
+                                        <input type="date" className="form-control" defaultValue={ekppMonth}  name="ekppMonth" onChange={(e) => setEkppMonth(e.target.value)} />
                                     </div>
                                 </div>
                                 <table className="table table-bordered" >
