@@ -38,13 +38,15 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
 
     const sumTotalOverAllAchive = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
-        setTotalOverAllAchive(sum)
-        return sum;
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverAllAchive((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
     }
     const sumTotalOverallTaskComp = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallTaskComp), 0);
-        setTotalOverallTaskComp(sum)
-        return sum;
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverallTaskComp((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
     }
 
     useEffect(() => {
@@ -102,7 +104,7 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
         
     }
   
-
+console.log("kppDetailsResponses : ", kppDetailsResponses)
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -131,14 +133,14 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                         }});
                     }}>
                     {({ values, setFieldValue }) => {
-
+                        
                         const handleTodoChange = (e, i, kppId, kppOverallWeightage, empOverallTaskComp, kppRating1) => {
                             console.log("e.target.value : ", e.target.value)
                             const field = e.target.name?.split(".")[1];
-                            console.log("kppDetailsResponses[i].empOverallTaskComp =", empOverallTaskComp)
-
+                            console.log("kppDetailsResponses[i] =", i)
+                           
                             kppDetailsResponses[i] = {
-
+                                 
                                 ...kppDetailsResponses[i],
 
 
@@ -153,6 +155,8 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                 "ekppMonth": ekppMonth,
                                 [field]: parseInt(e.target.value || 0),
                             }
+
+                           
                             setFieldValue("totalAchivedWeightage", sumTotalAchivedWeight(kppDetailsResponses));
                             setFieldValue("totalOverAllAchive", sumTotalOverAllAchive(kppDetailsResponses));
                             setFieldValue("totalOverallTaskCompleted", sumTotalOverallTaskComp(kppDetailsResponses));
