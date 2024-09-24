@@ -212,11 +212,11 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                         <tr className="text-center">
                                             <th className="text-center">OVERALL WEIGHTAGE IN % </th>
                                             <th className="text-center">ACHIEVED WEIGHTAGE IN % </th>
-                                            <th className="text-center">Rating 1</th>
-                                            <th className="text-center">Rating 2</th>
-                                            <th className="text-center">Rating 3</th>
-                                            <th className="text-center">Rating 4</th>
                                             <th className="text-center">Rating 5</th>
+                                            <th className="text-center">Rating 4</th>
+                                            <th className="text-center">Rating 3</th>
+                                            <th className="text-center">Rating 2</th>
+                                            <th className="text-center">Rating 1</th>
                                         </tr>
 
                                     </thead>
