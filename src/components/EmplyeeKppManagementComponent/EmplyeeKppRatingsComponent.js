@@ -10,6 +10,10 @@ const EmplyeeKppRatingsComponent = () => {
  
     const [ekppMonth, setEkppMonth] = useState('');
 
+
+    const [totalOverallRatings, setTotalOverallRatings] = useState(0);
+    const [totalOverallPercentage, setTotalOverallPercentage] = useState(0);
+
     
     const [empRemark, setEmpRemark] = useState('');
  const [isSuccess, setIsSuccess] = useState(true)
@@ -39,12 +43,27 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
 
 
 
+    const getAvgTotalOverallRatings = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.avgOverallRatings || 0), 0).toFixed(1);
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverallRatings((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
+    }
+
+    const getAvgTotalOverallPercetage = (empKpps) => {
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.avgOverallPercetage || 0), 0).toFixed(1);
+        const totalKpps=kppDetailsResponses?.length || 1;
+        setTotalOverallPercentage((sum/totalKpps).toFixed(1))
+        return (sum/totalKpps).toFixed(1);
+    }
+
     const sumTotalOverAllAchive = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseInt(currentValue.empOverallAchieve), 0);
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallAchieve), 0);
         const totalKpps=kppDetailsResponses?.length || 1;
         setTotalOverAllAchive((sum/totalKpps).toFixed(1))
         return (sum/totalKpps).toFixed(1);
     }
+
     const sumTotalOverallTaskComp = (empKpps) => {
         const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.empOverallTaskComp), 0);
         const totalKpps=kppDetailsResponses?.length || 1;
@@ -123,15 +142,19 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
             <div className="row">
                 <Formik initialValues={{
                     fields: kppDetailsResponses,
-                    totalAchivedWeightage:+ 0,
+                    totalAchivedWeightage: 0,
                     totalOverAllAchive: 0,
-                    totalOverallTaskCompleted: 0
+                    totalOverallTaskCompleted: 0,
+
+                    totalOverallRatings: 0,
+                    totalOverallPercentage: 0,
                 }}
                     enableReinitialize={true}
                     onSubmit={(values) => {
                         let ekppStatus = "In-Progress";
                         let evidence = "evidence";
-                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp, ekppMonth, ekppStatus, empRemark, evidence };
+                        console.log("values?.fields :", values?.fields)
+                        const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp,"totalOverallRatings":totalOverallRatings,"totalOverallPercentage":totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             if (res.data.success) {
                             alert(res.data.responseMessage);
@@ -147,10 +170,12 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                     }}>
                     {({ values, setFieldValue }) => {
                         
-                        const handleTodoChange = (e, i, kppId, kppOverallWeightage, empOverallTaskComp, kppRating1) => {
+                        const handleTodoChange = (e, i, kppId, kppOverallWeightage, hodOverallAchieve, gmOverallAchieve) => {
                   
                             const field = e.target.name?.split(".")[1];
-                           
+                            console.log("e.target.value", e.target.value)
+                           console.log("hodOverallAchieve", hodOverallAchieve)
+                           console.log("gmOverallAchieve", gmOverallAchieve)
                            
                             kppDetailsResponses[i] = {
                                  
@@ -165,6 +190,12 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                 "desigId": Cookies.get('desigId'),
                                 "empOverallTaskComp": field === "empOverallAchieve" && !!e.target.value ? (Number(e.target.value) / 5 * 100).toFixed(1) : 0,
                                 "empAchivedWeight": field === "empOverallAchieve" && !!e.target.value ? ((kppOverallWeightage * (Number(e.target.value) / 5 * 100).toFixed(1)) / 100).toFixed(1) : 0,
+                                
+                                "avgOverallRatings": field === "empOverallAchieve" && !!e.target.value ?  ((Number(hodOverallAchieve)+Number(gmOverallAchieve)+(Number(e.target.value)))  / 3).toFixed(1) : 0,
+                                "avgOverallPercetage": field === "empOverallAchieve" && !!e.target.value ? ((((Number(hodOverallAchieve)+Number(gmOverallAchieve)+(Number(e.target.value)))  / 3)/5)*100).toFixed(1) : 0,
+                                
+                               
+                                
                                 "ekppMonth": ekppMonth,
                                 [field]: parseInt(e.target.value || 0),
                             }
@@ -173,6 +204,10 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                             setFieldValue("totalAchivedWeightage", sumTotalAchivedWeight(kppDetailsResponses));
                             setFieldValue("totalOverAllAchive", sumTotalOverAllAchive(kppDetailsResponses));
                             setFieldValue("totalOverallTaskCompleted", sumTotalOverallTaskComp(kppDetailsResponses));
+
+                            setFieldValue("totalOverallRatings", getAvgTotalOverallRatings(kppDetailsResponses));
+                            setFieldValue("totalOverallPercentage", getAvgTotalOverallPercetage(kppDetailsResponses));
+                           
 
 
                             setFieldValue("fields", kppDetailsResponses)
@@ -207,6 +242,8 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                             <th rowSpan={2} className="text-center">GM Achived Weightage</th>
                                             <th rowSpan={2} className="text-center">GM Ratings</th>
                                             <th rowSpan={2} className="text-center">GM Overall Task Completed</th>
+                                            <th rowSpan={2} className="text-center">Overall Ratings</th>
+                                            <th rowSpan={2} className="text-center">Overall Rating in %</th>
                                             <th colSpan={5} className="text-center">RATING RATIO COULD BE CHANGED AS PER TARGETS</th>
                                         </tr>
                                         <tr className="text-center">
@@ -244,8 +281,8 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                                             max={5}
                                                             defaultValue={values?.fields?.[index]?.empOverallAchieve}
 
-                                                            onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.empOverallTaskComp, kppResponse.kppRating1)}
-                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, values?.fields?.[index]?.empOverallTaskComp, kppResponse.kppRating1)}
+                                                            onKeyDown={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, kppResponse.hodOverallAchieve, kppResponse.gmOverallAchieve)}
+                                                            onChange={event => handleTodoChange(event, index, kppResponse.kppId, kppResponse.kppOverallWeightage, kppResponse.hodOverallAchieve, kppResponse.gmOverallAchieve)}
                                                         />
                                                     </td>
                                                     <td>
@@ -258,6 +295,12 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                                     <td className='text-center'>{kppResponse.gmAchivedWeight}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallAchieve}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallTaskComp}</td>
+                                                    <td>
+                                                    <input type="text" className="form-control" name={`${index}.avgOverallRatings`} value={values?.fields?.[index]?.avgOverallRatings} disabled />
+                                                </td>
+                                                  <td>
+                                                        <input type="text" className="form-control" name={`${index}.avgOverallPercetage`} value={values?.fields?.[index]?.avgOverallPercetage} disabled />
+                                                    </td>
                                                     <td className='text-center'>{kppResponse.kppRating1}</td>
                                                     <td className='text-center'>{kppResponse.kppRating2}</td>
                                                     <td className='text-center'>{kppResponse.kppRating3}</td>
@@ -265,6 +308,8 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                                     <td className='text-center'>{kppResponse.kppRating5}</td>
 
                                                 </tr>
+
+                                               
                                         )}
                                         <tr className="text-justify">
                                             <td></td>
@@ -284,6 +329,12 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmAchivedWeight}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallAchieve}</label></td>
                                             <td className='text-center'> <label className="control-label text-right" >{kppMasterResponses?.totalGmOverallTaskComp}</label></td>
+                                            
+
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverallRatings === 0 ? getAvgTotalOverallRatings(values?.fields) : values?.totalOverallRatings}</label></td>
+                                            <td className='text-center'> <label className="control-label text-right">{values?.totalOverallPercentage === 0 ? getAvgTotalOverallPercetage(values?.fields) : values?.totalOverallPercentage}</label></td>
+                                           
+                                             
 
                                         </tr>
                                     </tbody>
