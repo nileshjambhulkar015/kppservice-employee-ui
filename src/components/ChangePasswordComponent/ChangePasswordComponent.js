@@ -31,7 +31,6 @@ export default function ChangePasswordComponent() {
     }
 
     const clearData = (e) => {
-        console.log("Hello : ", showAlert)
         setShowAlert(true);
     }
     return (

@@ -9,10 +9,10 @@ const EmplyeeKppRatingsComponent = () => {
     // Format the date to YYYY-MM-DD
  
     const [ekppMonth, setEkppMonth] = useState('');
+    const [showAlert, setShowAlert] = useState(false);
 
-
-    const [totalOverallRatings, setTotalOverallRatings] = useState(0);
-    const [totalOverallPercentage, setTotalOverallPercentage] = useState(0);
+    const [totalOverallRatings, setTotalOverallRatings] = useState();
+    const [totalOverallPercentage, setTotalOverallPercentage] = useState();
 
     
     const [empRemark, setEmpRemark] = useState('');
@@ -25,6 +25,11 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
 
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
+
+    const handleClose = () => {
+        setShowAlert(false);
+    };
+
 
     const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
         const t = new Date(date)
@@ -44,14 +49,14 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
 
 
     const getAvgTotalOverallRatings = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.avgOverallRatings || 0), 0).toFixed(1);
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.overallRatings || 0), 0).toFixed(1);
         const totalKpps=kppDetailsResponses?.length || 1;
         setTotalOverallRatings((sum/totalKpps).toFixed(1))
         return (sum/totalKpps).toFixed(1);
     }
 
     const getAvgTotalOverallPercetage = (empKpps) => {
-        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.avgOverallPercetage || 0), 0).toFixed(1);
+        const sum = empKpps.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.overallPercentage || 0), 0).toFixed(1);
         const totalKpps=kppDetailsResponses?.length || 1;
         setTotalOverallPercentage((sum/totalKpps).toFixed(1))
         return (sum/totalKpps).toFixed(1);
@@ -191,8 +196,8 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                 "empOverallTaskComp": field === "empOverallAchieve" && !!e.target.value ? (Number(e.target.value) / 5 * 100).toFixed(1) : 0,
                                 "empAchivedWeight": field === "empOverallAchieve" && !!e.target.value ? ((kppOverallWeightage * (Number(e.target.value) / 5 * 100).toFixed(1)) / 100).toFixed(1) : 0,
                                 
-                                "avgOverallRatings": field === "empOverallAchieve" && !!e.target.value ?  ((Number(hodOverallAchieve)+Number(gmOverallAchieve)+(Number(e.target.value)))  / 3).toFixed(1) : 0,
-                                "avgOverallPercetage": field === "empOverallAchieve" && !!e.target.value ? ((((Number(hodOverallAchieve)+Number(gmOverallAchieve)+(Number(e.target.value)))  / 3)/5)*100).toFixed(1) : 0,
+                                "overallRatings": field === "empOverallAchieve" && !!e.target.value ?  ((Number(hodOverallAchieve)+Number(gmOverallAchieve)+(Number(e.target.value)))  / 3).toFixed(1) : 0,
+                                "overallPercentage": field === "empOverallAchieve" && !!e.target.value ? ((((Number(hodOverallAchieve)+Number(gmOverallAchieve)+(Number(e.target.value)))  / 3)/5)*100).toFixed(1) : 0,
                                 
                                
                                 
@@ -296,10 +301,10 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                                     <td className='text-center'>{kppResponse.gmOverallAchieve}</td>
                                                     <td className='text-center'>{kppResponse.gmOverallTaskComp}</td>
                                                     <td>
-                                                    <input type="text" className="form-control" name={`${index}.avgOverallRatings`} value={values?.fields?.[index]?.avgOverallRatings} disabled />
+                                                    <input type="text" className="form-control" name={`${index}.overallRatings`} value={values?.fields?.[index]?.overallRatings} disabled />
                                                 </td>
                                                   <td>
-                                                        <input type="text" className="form-control" name={`${index}.avgOverallPercetage`} value={values?.fields?.[index]?.avgOverallPercetage} disabled />
+                                                        <input type="text" className="form-control" name={`${index}.overallPercentage`} value={values?.fields?.[index]?.overallPercentage} disabled />
                                                     </td>
                                                     <td className='text-center'>{kppResponse.kppRating1}</td>
                                                     <td className='text-center'>{kppResponse.kppRating2}</td>
