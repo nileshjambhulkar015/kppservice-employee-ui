@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import EmployeeKppsService from '../../services/EmployeeKppsService';
 import { BASE_URL_API } from '../../services/URLConstants';
 import axios from 'axios';
+import AlertboxComponent from '../AlertboxComponent/AlertboxComponent';
 
 const EmplyeeKppRatingsComponent = () => {
     // Format the date to YYYY-MM-DD
@@ -26,9 +27,13 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
     const [kppMasterResponses, setKppMasterResponses] = useState()
     const [kppDetailsResponses, setKppDetailsResponses] = useState([])
 
+    const [responseMessage, setResponseMessage] = useState([])
+
     const handleClose = () => {
         setShowAlert(false);
     };
+   
+
 
 
     const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
@@ -143,6 +148,7 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
   
 
     return (
+        <React.Fragment>
         <div className='container-fluid'>
             <div className="row">
                 <Formik initialValues={{
@@ -162,7 +168,9 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                         const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp,"totalOverallRatings":totalOverallRatings,"totalOverallPercentage":totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             if (res.data.success) {
-                            alert(res.data.responseMessage);
+                                setResponseMessage(res.data.responseMessage);
+                                setShowAlert(true);
+                           // alert(res.data.responseMessage);
                             EmployeeKppsService.getKPPDetails().then((res) => {
                                 setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
                                 setKppMasterResponses(res.data);
@@ -170,7 +178,9 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                                 setKppDetailsResponses(res.data.kppStatusDetails)
                             });
                         } else{
-                            alert(res.data.responseMessage);
+                            setResponseMessage(res.data.responseMessage);
+                            setShowAlert(true);
+                            // alert(res.data.responseMessage);
                         }});
                     }}>
                     {({ values, setFieldValue }) => {
@@ -178,9 +188,7 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                         const handleTodoChange = (e, i, kppId, kppOverallWeightage, hodOverallAchieve, gmOverallAchieve) => {
                   
                             const field = e.target.name?.split(".")[1];
-                            console.log("e.target.value", e.target.value)
-                           console.log("hodOverallAchieve", hodOverallAchieve)
-                           console.log("gmOverallAchieve", gmOverallAchieve)
+                          
                            
                             kppDetailsResponses[i] = {
                                  
@@ -414,6 +422,17 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
             </div>
 
         </div>
+          {showAlert && (
+                <AlertboxComponent
+                    show={showAlert}
+                    title="danger"
+                    message={responseMessage}
+                    onOk={handleClose}
+                    onClose={handleClose}
+                    isCancleAvailable={false}
+                />
+            )}
+        </React.Fragment>
     );
 }
 export default EmplyeeKppRatingsComponent;
