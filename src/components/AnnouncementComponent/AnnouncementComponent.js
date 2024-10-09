@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL_API } from '../../services/URLConstants';
 import AnnouncementService from '../../services/AnnouncementService';
 import AnnouncementTypeService from '../../services/AnnouncementTypeService';
-
+import AlertboxComponent from './../AlertboxComponent/AlertboxComponent'
 export default function AnnouncementComponent() {
 
     const [announId, setAnnounId] = useState('');
@@ -42,6 +42,19 @@ export default function AnnouncementComponent() {
 
     const [announcements, setAnnouncements] = useState([])
 
+    const [saveAnnounAlert, setSaveAnnounAlert] = useState(false);
+    const [deleteAnnounAlert, setDeleteAnnountAlert] = useState(false);
+    const [updateAnnounAlert, setUpdateAnnounAlert] = useState(false);
+    const handleClose = () => {
+
+        setSaveAnnounAlert(false);
+        setDeleteAnnountAlert(false)
+        setUpdateAnnounAlert(false)
+        setAnnounVenue('');
+         setAnnounTitle('');
+         setAnnounDescription('')
+        setRemark('');
+    };
 
     //loading all department and roles while page loading at first time
     useEffect(() => {
@@ -75,13 +88,12 @@ export default function AnnouncementComponent() {
 
         e.preventDefault()
         let statusCd = 'A'
-        if(asAnnounTypeId=="Select Announcement Type"){
-            asAnnounTypeId=null;
-        } 
+        if (asAnnounTypeId == "Select Announcement Type") {
+            asAnnounTypeId = null;
+        }
 
-        if(asAnnounStatus=="Select Announcement Status")
-        {
-            asAnnounStatus='null';
+        if (asAnnounStatus == "Select Announcement Status") {
+            asAnnounStatus = 'null';
         }
         let advComplaintSearch = { asAnnounFromDate, asAnnounToDate, asAnnounStatus, asAnnounTypeId, statusCd };
 
@@ -90,7 +102,7 @@ export default function AnnouncementComponent() {
             if (res.data.success) {
                 setIsSuccess(true);
                 setAnnouncements(res.data.responseData.content);
-               
+
                 console.log(res.data.responseData.content)
                 //setAsAnnounTypes(res.data.responseData.content);
             }
@@ -178,6 +190,7 @@ export default function AnnouncementComponent() {
             // User clicked Cancel
             console.log("User canceled the action.");
         }
+        setDeleteAnnountAlert(false)
 
     }
 
@@ -199,14 +212,19 @@ export default function AnnouncementComponent() {
         let announCreatedByDesigName = Cookies.get('desigName')
 
         let announcement = { announTypeId, announStartDate, announEndDate, announCreatedByEmpId, announCreatedByEmpEId, announCreatedByEmpName, announCreatedByRoleId, announCreatedByRoleName, announCreatedByDeptId, announCreatedByDeptName, announCreatedByDesigId, announCreatedByDesigName, announVenue, announTitle, announDescription, announStatus, remark, statusCd, employeeId };
-        console.log("announcement :", announcement)
+        
         AnnouncementService.saveAnnouncementDetails(announcement).then(res => {
 
             AnnouncementService.getAnnouncementByPaging().then((res) => {
                 setAnnouncements(res.data.responseData.content);
             });
+            setAnnounVenue('');
+         setAnnounTitle('');
+         setAnnounDescription('')
         }
         );
+
+        setSaveAnnounAlert(false)
 
     }
 
@@ -226,8 +244,8 @@ export default function AnnouncementComponent() {
 
     }
     return (
+        <React.Fragment>
 
-        <div>
             <div className="row">
                 <h2 className="text-center">Announcement List</h2>
 
@@ -241,7 +259,7 @@ export default function AnnouncementComponent() {
                         </div>
                     </div>
                     <div className="row">
-                    {isSuccess ?
+                        {isSuccess ?
                             <table className="table table-bordered">
                                 <thead>
                                     <tr>
@@ -460,7 +478,7 @@ export default function AnnouncementComponent() {
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => saveAnnouncement(e)} > Submit</button>
+                                <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => setSaveAnnounAlert(true)} > Submit</button>
                                 <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>
                         </div>
@@ -586,8 +604,30 @@ export default function AnnouncementComponent() {
                     </div>
                 </div>
             </div>
+            
+            {saveAnnounAlert && (
+                <AlertboxComponent
+                    show={saveAnnounAlert}
+                    title="danger"
+                    message="Do you want to save Announcement"
+                    onOk={saveAnnouncement}
+                    onClose={handleClose}
+                    isCancleAvailable={true}
+                />
+            )}
 
+             {deleteAnnounAlert && (
+                <AlertboxComponent
+                    show={deleteAnnounAlert}
+                    title="danger"
+                    message="Do you want to delete Announcement"
+                    onOk={cancelAnnouncement}
+                    onClose={handleClose}
+                    isCancleAvailable={true}
+                />
+            )}
+        </React.Fragment>
 
-        </div>
     );
+
 }

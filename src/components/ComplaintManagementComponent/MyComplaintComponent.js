@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import ComplaintService from '../../services/ComplaintService';
 import { BASE_URL_API } from '../../services/URLConstants';
+import AlertboxComponent from '../AlertboxComponent/AlertboxComponent';
 
 export default function MyComplaintComponent() {
 
@@ -44,7 +45,21 @@ export default function MyComplaintComponent() {
     const [asCompId, setAsCompId] = useState('')
     const [asCompStatus, setAsCompStatus] = useState('')
     const [asCompTypeDeptId, setAsCompDeptId] = useState('')
-    //loading all department and roles while page loading at first time
+  
+    const [saveMyComplaintAlert, setSaveMyComplaintAlert] = useState(false);
+    const [deleteMyComplaintAlert, setDeletMyComplaintAlert] = useState(false);
+    const [updateMyComplaintAlert, setUpdatMyComplaintAlert] = useState(false);
+    const handleClose = () => {
+
+        setSaveMyComplaintAlert(false);
+        setDeletMyComplaintAlert(false)
+        setUpdatMyComplaintAlert(false)
+        //setAnnounVenue('');
+         //setAnnounTitle('');
+       //  setAnnounDescription('')
+        setRemark('');
+    };
+
     useEffect(() => {
 
         ComplaintService.getAllDepartmentDetails().then((res) => {
@@ -149,9 +164,9 @@ export default function MyComplaintComponent() {
         let empEId = Cookies.get('empEId')
         let empEmailId = Cookies.get('empEmailId')
         let complaint = { empId, empEId, roleId, deptId, desigId, compTypeDeptId, compTypeId, compDesc, empEmailId, statusCd, employeeId };
-
+        
         ComplaintService.saveComplaintDetails(complaint).then(res => {
-            console.log("res=", res.data)
+            
             ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
                 setComplaints(res.data.responseData.content);
 
@@ -161,7 +176,7 @@ export default function MyComplaintComponent() {
             console.log("Department added");
         }
         );
-        // window.location.reload(); 
+        setSaveMyComplaintAlert(false)
     }
 
     const getComplaintById = (e) => {
@@ -216,6 +231,7 @@ export default function MyComplaintComponent() {
         }
         );
 
+        setUpdatMyComplaintAlert(false)
     }
 
     const onComplaintStatusChangeHandler = (event) => {
@@ -248,7 +264,7 @@ export default function MyComplaintComponent() {
     }
     return (
 
-        <div>
+        <React.Fragment>
             <div className="row">
 
                 <h2 className="text-center">My Complaint List</h2>
@@ -378,7 +394,7 @@ export default function MyComplaintComponent() {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => saveComplaintDetails(e)} > Submit</button>
+                            <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => setSaveMyComplaintAlert(true)} > Submit</button>
                             <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -605,6 +621,38 @@ export default function MyComplaintComponent() {
 
                 </div>
             </div>
-        </div>
+            {saveMyComplaintAlert && (
+                <AlertboxComponent
+                    show={saveMyComplaintAlert}
+                    title="danger"
+                    message="Do you want to save Complaint"
+                    onOk={saveComplaintDetails}
+                    onClose={handleClose}
+                    isCancleAvailable={true}
+                />
+            )}
+
+            {updateMyComplaintAlert && (
+                <AlertboxComponent
+                    show={updateMyComplaintAlert}
+                    title="danger"
+                    message="Do you want to update Complaint"
+                    onOk={updateComplaint}
+                    onClose={handleClose}
+                    isCancleAvailable={true}
+                />
+            )}
+
+             {deleteMyComplaintAlert && (
+                <AlertboxComponent
+                    show={deleteMyComplaintAlert}
+                    title="danger"
+                    message="Do you want to delete Complaint"
+                    onOk={deleteComplaintById}
+                    onClose={handleClose}
+                    isCancleAvailable={true}
+                />
+            )}
+        </React.Fragment>
     );
 }
