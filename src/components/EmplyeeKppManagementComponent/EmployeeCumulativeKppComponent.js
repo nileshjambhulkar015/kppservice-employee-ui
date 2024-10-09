@@ -142,7 +142,7 @@ export default function EmployeeCumulativeKppComponent() {
                                 (employee, index) =>   //index is inbuilt variable of map started with 0
                                     <tr key={employee.empId}>
                                         <td className="text-center">{index + 1}</td>
-                                        <td className="text-justify">{YYYY_MM_DD_Formater(employee.ekppMonth)}</td>
+                                        <td className="text-justify">{employee.ekppMonth}</td>
                                         <td className="text-center">{employee.empOverallAchive}</td>
                                         <td className="text-center">{employee.hodOverallAchieve}</td>
                                         <td className="text-center">{employee.gmOverallAchieve}</td>
