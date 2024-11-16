@@ -45,7 +45,7 @@ export default function MyComplaintComponent() {
     const [asCompId, setAsCompId] = useState('')
     const [asCompStatus, setAsCompStatus] = useState('')
     const [asCompTypeDeptId, setAsCompDeptId] = useState('')
-  
+
     const [saveMyComplaintAlert, setSaveMyComplaintAlert] = useState(false);
     const [deleteMyComplaintAlert, setDeletMyComplaintAlert] = useState(false);
     const [updateMyComplaintAlert, setUpdatMyComplaintAlert] = useState(false);
@@ -55,8 +55,8 @@ export default function MyComplaintComponent() {
         setDeletMyComplaintAlert(false)
         setUpdatMyComplaintAlert(false)
         //setAnnounVenue('');
-         //setAnnounTitle('');
-       //  setAnnounDescription('')
+        //setAnnounTitle('');
+        //  setAnnounDescription('')
         setRemark('');
     };
 
@@ -91,7 +91,7 @@ export default function MyComplaintComponent() {
     }, []);
 
     const clearSearchData = () => {
-        
+
         ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
@@ -164,9 +164,9 @@ export default function MyComplaintComponent() {
         let empEId = Cookies.get('empEId')
         let empEmailId = Cookies.get('empEmailId')
         let complaint = { empId, empEId, roleId, deptId, desigId, compTypeDeptId, compTypeId, compDesc, empEmailId, statusCd, employeeId };
-        
+
         ComplaintService.saveComplaintDetails(complaint).then(res => {
-            
+
             ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
                 setComplaints(res.data.responseData.content);
 
@@ -202,18 +202,18 @@ export default function MyComplaintComponent() {
 
     const deleteComplaintById = (e) => {
         if (window.confirm("Do you want to delete this complaint ?")) {
-        ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
-            ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content);
-                console.log(res.data.responseData.content)
-            });
-            console.log("Department deleted");
+            ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
+                ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+                    setComplaints(res.data.responseData.content);
+                    console.log(res.data.responseData.content)
+                });
+                console.log("Department deleted");
+            }
+            );
+        } else {
+            // User clicked Cancel
+            console.log("User canceled the action.");
         }
-        );
-    } else {
-        // User clicked Cancel
-        console.log("User canceled the action.");
-    }
     }
 
     const updateComplaint = (e) => {
@@ -643,7 +643,7 @@ export default function MyComplaintComponent() {
                 />
             )}
 
-             {deleteMyComplaintAlert && (
+            {deleteMyComplaintAlert && (
                 <AlertboxComponent
                     show={deleteMyComplaintAlert}
                     title="danger"
