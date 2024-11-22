@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import OthersResolveComplaintService from '../../services/OthersResolveComplaintService';
 import OthersInProgressComplaintService from '../../services/OthersInProgressComplaintService';
 import { BASE_URL_API } from '../../services/URLConstants';
+import PaginationComponent from '../PaginationComponent/PaginationComponent';
 
 
 
@@ -54,12 +55,39 @@ export default function OthersInProgressComplaintComponent() {
     const [asCompStatus, setAsCompStatus] = useState('')
     const [empCompDeptId, setEmpCompDeptId] = useState('')
 
+    const [responseMessage, setResponseMessage] = useState('')   
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
 
     //loading all department and roles while page loading at first time
     useEffect(() => {
-        OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
             setComplaints(res.data.responseData.content);
-            console.log(res.data.responseData.content)
+            setDataPageable(res.data.responseData);
+        }
+        else {
+            setIsSuccess(false);
+            setResponseMessage(res.data.responseMessage)
+        }
         });
 
         OthersInProgressComplaintService.getAllDepartmentDetails().then((res) => {
@@ -67,7 +95,7 @@ export default function OthersInProgressComplaintComponent() {
         });
 
 
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
     const handleDepartmentChange = (value) => {
@@ -88,48 +116,66 @@ export default function OthersInProgressComplaintComponent() {
         e.preventDefault()
         let advComplaintSearch = { compFromDate, compToDate, asCompResolveEmpId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
 
-        OthersInProgressComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            advComplaintSearch
+        }
+
+        OthersInProgressComplaintService.advanceSearchComplaintDetails(data).then(res => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-        }
-        );
+        }, [currentPage, itemsPerPage]);
     }
 
     const clearSearchData = () => {
-        
-        OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
 
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
 
 
     const searchComplaintById = (e) => {
         setEmpCompIdSearch(e.target.value)
-
-        OthersInProgressComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+        let empCompIdSearch=e.target.value;
+        const data = {
+            currentPage,
+            itemsPerPage,
+            empCompIdSearch
+        }
+        OthersInProgressComplaintService.getEmployeeCompaintsByComplaintId(data).then((res) => {
 
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
-                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-        });
+        }, [currentPage, itemsPerPage]);
     }
 
 
@@ -171,7 +217,11 @@ export default function OthersInProgressComplaintComponent() {
     };
 
     const updateComplaint = (e) => {
-
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        if (window.confirm("Do you want to resolve this complaint ?")) {
         e.preventDefault()
 
         let compResolveEmpId = Cookies.get('empId');
@@ -181,14 +231,26 @@ export default function OthersInProgressComplaintComponent() {
         let complaint = { empCompId, compStatus, compResolveDateTime, compResolveEmpId, compResolveEmpName, compResolveEmpEId, remark };
 
         OthersInProgressComplaintService.updateComplaintDetails(complaint).then(res => {
-            OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content?.filter((item) => item.compStatus != 'Pending'));
+            OthersInProgressComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+                if (res.data.success) {
+                    setIsSuccess(true);
+                    setComplaints(res.data.responseData.content?.filter((item) => item.compStatus != 'Pending'));
+                    setDataPageable(res.data.responseData);
+                }
+                else {
+                    setResponseMessage(res.data.responseMessage)
+                    setIsSuccess(false);
+                }
+                
 
-            });
-            console.log("Complaint added");
+            }, [currentPage, itemsPerPage]);
+           
         }
         );
-
+    } else {
+        // User clicked Cancel
+        console.log("User canceled the action.");
+    }
     }
 
 
@@ -271,7 +333,13 @@ export default function OthersInProgressComplaintComponent() {
                                 }
                             </tbody>
                         </table>
-                        :<h1>No Data Found</h1>}
+                        : <h1>{responseMessage}</h1>}
+                        <PaginationComponent
+                        currentPage={currentPage}
+                        totalPages={dataPageable.totalPages || 10}
+                        onPageChange={handlePageChange}
+                        onItemsPerPageChange={handleItemsPerPageChange}
+                    />
                     </div>
 
                 </div>
@@ -447,7 +515,7 @@ export default function OthersInProgressComplaintComponent() {
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="hodKppStatus">Complaint Status:</label>
                                     <div className="col-sm-3">
-                                        <select className="form-control" id="compStatus" onChange={(e) => onComplaintStatusChangeHandler(e.target.value)} defaultValue={compStatus}>
+                                        <select className="form-control" id="compStatus" onChange={(e) => onComplaintStatusChangeHandler(e.target.value)} >
                                             <option value="Resolved">Resolved</option>
                                             <option value="Reject">Reject</option>
                                         </select>

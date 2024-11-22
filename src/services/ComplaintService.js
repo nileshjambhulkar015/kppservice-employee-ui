@@ -6,17 +6,10 @@ const BASE_URL = BASE_URL_API + "/complaint";
 
 
 class ComplaintService {
-
-
-
-
-
-
-
     //at page load call all the departments load all departments
-    getEmployeeCompaintsDetailsByPaging() {
+    getEmployeeCompaintsDetailsByPaging(data) {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API + `/complaint/complaint-search?empId=${Cookies.get('empId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+            return axios.get(BASE_URL_API + `/complaint/complaint-search?empId=${Cookies.get('empId')}&statusCd=A&page=${data.currentPage-1}&size=${data.itemsPerPage}&sort=empCompId asc`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -25,9 +18,9 @@ class ComplaintService {
 
 
     //search complaint by complaint id
-    getEmployeeCompaintsByComplaintId(empCompIdSearch) {
+    getEmployeeCompaintsByComplaintId(data) {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API + `/complaint/complaint-search?compId=${empCompIdSearch}&empId=${Cookies.get('empId')}&statusCd=A&page=0&size=1200&sort=empCompId asc`)
+            return axios.get(BASE_URL_API + `/complaint/complaint-search?compId=${data.empCompIdSearch}&empId=${Cookies.get('empId')}&statusCd=A&page=${data.currentPage-1}&size=${data.itemsPerPage}&sort=empCompId asc`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -155,7 +148,7 @@ class ComplaintService {
     }
 
     //Get all sites present in department table from designation for KPP
-    getComplaintTypeByDeptId(compTypeDeptId) {
+    ddComplaintTypeByDeptId(compTypeDeptId) {
         console.log("Site Service regionid=", compTypeDeptId)
         if (null != Cookies.get('empId')) {
             return axios.get(BASE_URL_API + `/complaint-type/dd-comp-type-by-dept-id?compTypeDeptId=${compTypeDeptId}`)
@@ -167,9 +160,9 @@ class ComplaintService {
     }
 
 
-    getAllDepartmentDetails() {
+    ddAllDepartmentDetails() {
         if (null != Cookies.get('empId')) {
-            return axios.get(BASE_URL_API + "/department")
+            return axios.get(BASE_URL_API + "/complaint-type/comp-type-dd-dept")
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -177,9 +170,10 @@ class ComplaintService {
     }
 
        //advance search of employee
-       advanceSearchComplaintDetails(advSearchComplaints) {
+       advanceSearchComplaintDetails(data) {
         if (null != Cookies.get('empId')) {
-            return axios.post(BASE_URL_API+"/complaint/complaint-adv-search?page=0&size=200", advSearchComplaints)
+          console.log(data)
+            return axios.post(BASE_URL_API+`/complaint/complaint-adv-search?page=${data.currentPage-1}&size=${data.itemsPerPage}`, data.advComplaintSearch)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

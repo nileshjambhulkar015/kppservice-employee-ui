@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import ComplaintService from '../../services/ComplaintService';
 import { BASE_URL_API } from '../../services/URLConstants';
-import AlertboxComponent from '../AlertboxComponent/AlertboxComponent';
+import PaginationComponent from '../PaginationComponent/PaginationComponent';
 
 export default function MyComplaintComponent() {
 
@@ -38,7 +38,7 @@ export default function MyComplaintComponent() {
 
     const [departments, setDepartments] = useState([])
 
-
+    const [responseMessage, setResponseMessage] = useState('')
     const [compFromDate, setCompFromDate] = useState('')
     const [compToDate, setCompToDate] = useState('')
     const [asDeptId, setAsDeptId] = useState('')
@@ -46,40 +46,53 @@ export default function MyComplaintComponent() {
     const [asCompStatus, setAsCompStatus] = useState('')
     const [asCompTypeDeptId, setAsCompDeptId] = useState('')
 
-    const [saveMyComplaintAlert, setSaveMyComplaintAlert] = useState(false);
-    const [deleteMyComplaintAlert, setDeletMyComplaintAlert] = useState(false);
-    const [updateMyComplaintAlert, setUpdatMyComplaintAlert] = useState(false);
-    const handleClose = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
 
-        setSaveMyComplaintAlert(false);
-        setDeletMyComplaintAlert(false)
-        setUpdatMyComplaintAlert(false)
-        //setAnnounVenue('');
-        //setAnnounTitle('');
-        //  setAnnounDescription('')
-        setRemark('');
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
     };
 
-    useEffect(() => {
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
 
-        ComplaintService.getAllDepartmentDetails().then((res) => {
+    //loading all department and roles while page loading at first time
+    useEffect(() => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        ComplaintService.ddAllDepartmentDetails().then((res) => {
             setDepartments(res.data);
+            
         });
 
-        ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        ComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
             setComplaints(res.data.responseData.content);
-            console.log(res.data.responseData.content)
+            setDataPageable(res.data.responseData);
+        }
+        else {
+            setResponseMessage(res.data.responseMessage)
+            setIsSuccess(false);
+        }
 
         });
 
 
         ComplaintService.getAllDepartmentFromComplaintType().then((res) => {
             setDepartments(res.data);
-            setCompTypeDeptId(res.data?.[0].deptId)
+            setCompTypeDeptId(res.data?.[0]?.deptId)
 
-            let compTypeDeptId = res.data?.[0].deptId;
+            let compTypeDeptId = res.data?.[0]?.deptId;
             // console.log("region id =", regionId)
-            ComplaintService.getComplaintTypeByDeptId(compTypeDeptId).then((res1) => {
+            ComplaintService.ddComplaintTypeByDeptId(compTypeDeptId).then((res1) => {
                 setComplaintTypes(res1.data);
                 setCompTypeId(res1.data?.[0]?.compTypeId)
 
@@ -88,20 +101,24 @@ export default function MyComplaintComponent() {
         });
 
 
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
     const clearSearchData = () => {
-
-        ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        ComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
                 setIsSuccess(false);
             }
 
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
 
@@ -122,17 +139,21 @@ export default function MyComplaintComponent() {
         let empCompDeptId = Cookies.get('deptId')
         e.preventDefault()
         let advComplaintSearch = { compFromDate, compToDate, empId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
-
-        ComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            advComplaintSearch
+        }
+        ComplaintService.advanceSearchComplaintDetails(data).then(res => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
                 setIsSuccess(false);
             }
-        }
-        );
+        }, [currentPage, itemsPerPage]);
     }
 
 
@@ -142,7 +163,7 @@ export default function MyComplaintComponent() {
     const handleDepartmentIdChange = (value) => {
         let compTypeDeptId = value;
         setCompTypeDeptId(compTypeDeptId);
-        ComplaintService.getComplaintTypeByDeptId(compTypeDeptId).then((res1) => {
+        ComplaintService.ddComplaintTypeByDeptId(compTypeDeptId).then((res1) => {
             setComplaintTypes(res1.data);
             setCompTypeId(res1.data?.[0]?.compTypeId)
 
@@ -154,7 +175,13 @@ export default function MyComplaintComponent() {
 
 
     const saveComplaintDetails = (e) => {
+
         e.preventDefault()
+        const data = {
+            currentPage,
+            itemsPerPage
+           
+        }
         let statusCd = 'A';
         let employeeId = Cookies.get('empId')
         let roleId = Cookies.get('roleId')
@@ -166,17 +193,23 @@ export default function MyComplaintComponent() {
         let complaint = { empId, empEId, roleId, deptId, desigId, compTypeDeptId, compTypeId, compDesc, empEmailId, statusCd, employeeId };
 
         ComplaintService.saveComplaintDetails(complaint).then(res => {
+          
+            ComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+                if (res.data.success) {
+                    setIsSuccess(true);
+                    setComplaints(res.data.responseData.content);
+                    setDataPageable(res.data.responseData);
+                }
+                else {
+                    setIsSuccess(false);
+                    setResponseMessage(res.data.responseMessage)
+                }
 
-            ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content);
+            }, [currentPage, itemsPerPage]);
 
-                setRemark('');
-
-            });
-            console.log("Department added");
         }
         );
-        setSaveMyComplaintAlert(false)
+
     }
 
     const getComplaintById = (e) => {
@@ -200,16 +233,32 @@ export default function MyComplaintComponent() {
     }
 
 
-    const deleteComplaintById = (e) => {
+    const deleteDepartmentById = (e) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+           
+        }
         if (window.confirm("Do you want to delete this complaint ?")) {
-            ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
-                ComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                    setComplaints(res.data.responseData.content);
-                    console.log(res.data.responseData.content)
-                });
-                console.log("Department deleted");
-            }
-            );
+            ComplaintService.getComplaintById(e).then(res => {
+                let complaint = res.data;
+                setEmpCompId(complaint.empCompId)
+
+                ComplaintService.deleteEmployeeComplaintById(empCompId).then(res => {
+                    ComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+                        if (res.data.success) {
+                            setIsSuccess(true);
+                            setComplaints(res.data.responseData.content);
+                            setDataPageable(res.data.responseData);
+                        }
+                        else {
+                            setIsSuccess(false);
+                        }
+                    });
+                    console.log("Department deleted");
+                }
+                );
+            }, [currentPage, itemsPerPage]);
         } else {
             // User clicked Cancel
             console.log("User canceled the action.");
@@ -231,7 +280,6 @@ export default function MyComplaintComponent() {
         }
         );
 
-        setUpdatMyComplaintAlert(false)
     }
 
     const onComplaintStatusChangeHandler = (event) => {
@@ -239,19 +287,26 @@ export default function MyComplaintComponent() {
     };
 
     const searchComplaintById = (e) => {
+        let empCompIdSearch=e.target.value;
+        const data = {
+            currentPage,
+            itemsPerPage,
+            empCompIdSearch
+        }
         setEmpCompIdSearch(e.target.value)
 
-        ComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+        ComplaintService.getEmployeeCompaintsByComplaintId(data).then((res) => {
 
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
-                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-        });
+        }, [currentPage, itemsPerPage]);
     }
 
 
@@ -264,7 +319,7 @@ export default function MyComplaintComponent() {
     }
     return (
 
-        <React.Fragment>
+        <div>
             <div className="row">
 
                 <h2 className="text-center">My Complaint List</h2>
@@ -320,15 +375,21 @@ export default function MyComplaintComponent() {
                                                     <td>{complaint.compStatus}</td>
 
 
-                                                    <td> <button type="submit" className="btn btn-info" data-toggle="modal" data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
-                                                        <button type="submit" className="btn col-sm-offset-1 btn-danger" onClick={() => deleteComplaintById(complaint.empCompId)}>Delete</button>
+                                                    <td> <button type="submit" className="btn btn-info" data-toggle="modal" disabled={complaint?.compStatus === "Resolved"} data-target="#updateDepartment" onClick={() => getComplaintById(complaint.empCompId)}>Update</button>
+                                                        <button type="submit" className="btn col-sm-offset-1 btn-danger" disabled={complaint?.compStatus === "Resolved"} onClick={() => deleteDepartmentById(complaint.empCompId)}>Delete</button>
                                                         <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
                                                 </tr>
                                         )
                                     }
                                 </tbody>
                             </table>
-                            : <h1>No Data Found</h1>}
+                            : <h4>{responseMessage}</h4>}
+                            <PaginationComponent
+                                currentPage={currentPage}
+                                totalPages={dataPageable.totalPages || 10}
+                                onPageChange={handlePageChange}
+                                onItemsPerPageChange={handleItemsPerPageChange}
+                            />
                     </div>
 
                 </div>
@@ -394,7 +455,7 @@ export default function MyComplaintComponent() {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => setSaveMyComplaintAlert(true)} > Submit</button>
+                            <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => saveComplaintDetails(e)} > Submit</button>
                             <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -621,38 +682,6 @@ export default function MyComplaintComponent() {
 
                 </div>
             </div>
-            {saveMyComplaintAlert && (
-                <AlertboxComponent
-                    show={saveMyComplaintAlert}
-                    title="danger"
-                    message="Do you want to save Complaint"
-                    onOk={saveComplaintDetails}
-                    onClose={handleClose}
-                    isCancleAvailable={true}
-                />
-            )}
-
-            {updateMyComplaintAlert && (
-                <AlertboxComponent
-                    show={updateMyComplaintAlert}
-                    title="danger"
-                    message="Do you want to update Complaint"
-                    onOk={updateComplaint}
-                    onClose={handleClose}
-                    isCancleAvailable={true}
-                />
-            )}
-
-            {deleteMyComplaintAlert && (
-                <AlertboxComponent
-                    show={deleteMyComplaintAlert}
-                    title="danger"
-                    message="Do you want to delete Complaint"
-                    onOk={deleteComplaintById}
-                    onClose={handleClose}
-                    isCancleAvailable={true}
-                />
-            )}
-        </React.Fragment>
+        </div>
     );
 }

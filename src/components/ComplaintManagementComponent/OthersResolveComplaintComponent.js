@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from "react";
 import OthersResolveComplaintService from '../../services/OthersResolveComplaintService';
 import { BASE_URL_API } from '../../services/URLConstants';
+import PaginationComponent from '../PaginationComponent/PaginationComponent';
 
 
 
@@ -54,19 +55,48 @@ export default function OthersResolveComplaintComponent() {
     const [asCompTypeDeptId, setAsCompTypeDeptId] = useState('')
     const [empCompDeptId, setEmpCompDeptId] = useState('')
 
+    const [responseMessage, setResponseMessage] = useState('')   
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
+
     //loading all department and roles while page loading at first time
     useEffect(() => {
-        OthersResolveComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+
+        OthersResolveComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
             setComplaints(res.data.responseData.content);
-            console.log(res.data.responseData.content)
-        });
+            setDataPageable(res.data.responseData);
+            }
+            else {
+                setResponseMessage(res.data.responseMessage)
+                setIsSuccess(false);
+            }
+        }, [currentPage, itemsPerPage]);
 
         OthersResolveComplaintService.getAllDepartmentDetails().then((res) => {
             setDepartments(res.data);
         });
 
 
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
     const handleDepartmentChange = (value) => {
@@ -89,16 +119,22 @@ export default function OthersResolveComplaintComponent() {
         e.preventDefault()
         let advComplaintSearch = { empId,compFromDate, compToDate, asCompResolveEmpId, empCompDeptId, asCompTypeDeptId, asCompId, asCompStatus };
 
-        OthersResolveComplaintService.advanceSearchComplaintDetails(advComplaintSearch).then(res => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            advComplaintSearch
+        }
+        OthersResolveComplaintService.advanceSearchComplaintDetails(data).then(res => {
             if (res.data.success) {              
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-        }
-        );
+        }, [currentPage, itemsPerPage]);
     }
 
     const getComplaintById = (e) => {
@@ -140,66 +176,46 @@ export default function OthersResolveComplaintComponent() {
 
     const searchComplaintById = (e) => {
         setEmpCompIdSearch(e.target.value)
-
-        OthersResolveComplaintService.getEmployeeCompaintsByComplaintId(e.target.value).then((res) => {
+        let empCompIdSearch=e.target.value;
+        const data = {
+            currentPage,
+            itemsPerPage,
+            empCompIdSearch
+        }
+        OthersResolveComplaintService.getEmployeeCompaintsByComplaintId(data).then((res) => {
 
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
-                // setEmployees(res.data.responseData.content?.filter((item) => item.roleId !== 1));
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-        });
-    }
-
-
-
-
-
-
-
-    const updateComplaint = (e) => {
-
-        e.preventDefault()
-        let compStatus = "In Progress";
-        let compResolveEmpId = Cookies.get('empId');
-        let compResolveEmpName = Cookies.get('empFirstName') + " " + Cookies.get('empMiddleName') + " " + Cookies.get('empLastName');
-        let compResolveEmpEId = Cookies.get('empEId');
-
-        let complaint = { empCompId, compStatus, compResolveEmpId, compResolveEmpName, compResolveEmpEId };
-
-        OthersResolveComplaintService.updateComplaintDetails(complaint).then(res => {
-            OthersResolveComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
-                setComplaints(res.data.responseData.content);
-
-            });
-            console.log("Complaint added");
-        }
-        );
-
+        }, [currentPage, itemsPerPage]);
     }
 
     const clearSearchData = () => {
-        
-        OthersResolveComplaintService.getEmployeeCompaintsDetailsByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        OthersResolveComplaintService.getEmployeeCompaintsDetailsByPaging(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setComplaints(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
                 setIsSuccess(false);
+                setResponseMessage(res.data.responseMessage)
+                
             }
 
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
-
-    const onComplaintStatusChangeHandler = (event) => {
-        setCompStatus(event);
-    };
-
 
 
     return (
@@ -256,29 +272,27 @@ export default function OthersResolveComplaintComponent() {
                                                 <td className="text-center">{index + 1}</td>
                                                 <td> <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => getComplaintById(complaint.empCompId)}>View</button></td>
                                                 <td>{complaint.compId}</td>
-
-
                                                 <td>{complaint.empName}</td>
                                                 <td>{complaint.empEId}</td>
                                                 <td>{complaint.roleName}</td>
                                                 <td>{complaint.deptName}</td>
                                                 <td>{complaint.desigName}</td>
-
-
                                                 <td>{complaint.compDate}</td>
                                                 <td>{complaint.compResolveDate}</td>
                                                 <td>{complaint.compTypeName}</td>
                                                 <td>{complaint.compStatus}</td>
-
-
-
-
                                             </tr>
                                     )
                                 }
                             </tbody>
                         </table>
-                        :<h1>No Data Found</h1>}
+                        : <h1>{responseMessage}</h1>}
+                        <PaginationComponent
+                        currentPage={currentPage}
+                        totalPages={dataPageable.totalPages || 10}
+                        onPageChange={handlePageChange}
+                        onItemsPerPageChange={handleItemsPerPageChange}
+                    />
                     </div>
 
                 </div>
