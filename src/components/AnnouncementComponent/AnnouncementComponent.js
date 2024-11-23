@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL_API } from '../../services/URLConstants';
 import AnnouncementService from '../../services/AnnouncementService';
 import AnnouncementTypeService from '../../services/AnnouncementTypeService';
-import AlertboxComponent from './../AlertboxComponent/AlertboxComponent'
+import PaginationComponent from '../PaginationComponent/PaginationComponent';
+
 export default function AnnouncementComponent() {
 
     const [announId, setAnnounId] = useState('');
@@ -41,46 +42,53 @@ export default function AnnouncementComponent() {
 
 
     const [announcements, setAnnouncements] = useState([])
+    const [responseMessage, setResponseMessage] = useState('')
 
-    const [saveAnnounAlert, setSaveAnnounAlert] = useState(false);
-    const [deleteAnnounAlert, setDeleteAnnountAlert] = useState(false);
-    const [updateAnnounAlert, setUpdateAnnounAlert] = useState(false);
-    const handleClose = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
 
-        setSaveAnnounAlert(false);
-        setDeleteAnnountAlert(false)
-        setUpdateAnnounAlert(false)
-        setAnnounVenue('');
-         setAnnounTitle('');
-         setAnnounDescription('')
-        setRemark('');
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
     };
 
     //loading all department and roles while page loading at first time
     useEffect(() => {
-        AnnouncementService.getAnnouncementByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        AnnouncementService.getAnnouncementByPaging(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setAnnouncements(res.data.responseData.content);
-                console.log(res.data.responseData.content)
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
         });
 
         AnnouncementTypeService.getAllAnnouncementType().then((res) => {
             setAnnounTypes(res.data);
-            setAnnounTypeId(res.data?.[0].announTypeId)
+            setAnnounTypeId(res.data?.[0]?.announTypeId)
         });
 
         AnnouncementService.getAllAnnouncementTypeFromAnnoun().then((res) => {
             setAsAnnounTypes(res.data);
-            setAsAnnounTypeId(res.data?.[0].announTypeId)
+            setAsAnnounTypeId(res.data?.[0]?.announTypeId)
         });
 
 
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
     // Advance search employee
@@ -97,39 +105,25 @@ export default function AnnouncementComponent() {
         }
         let advComplaintSearch = { asAnnounFromDate, asAnnounToDate, asAnnounStatus, asAnnounTypeId, statusCd };
 
-        console.log(advComplaintSearch)
-        AnnouncementService.advanceSearchAnnouncementDetails(advComplaintSearch).then(res => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            advComplaintSearch
+        }
+        AnnouncementService.advanceSearchAnnouncementDetails(data).then(res => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setAnnouncements(res.data.responseData.content);
-
-                console.log(res.data.responseData.content)
-                //setAsAnnounTypes(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
-        }
-        );
+        }, [currentPage, itemsPerPage]);
     }
-
-    const handleAnnouncementTypeChange = (value) => {
-        if (value == "Select Announcement") {
-            value = null;
-        }
-        setAnnounTypeId(value)
-    }
-
-    const handleAsAnnouncementTypeChange = (value) => {
-        if (value == "Select Announcement") {
-            value = null;
-        }
-        setAsAnnounTypeId(value)
-    }
-
 
     const onAsAnnouncementStatusChangeHandler = (event) => {
-
         setAsAnnounStatus(event);
     };
 
@@ -165,38 +159,48 @@ export default function AnnouncementComponent() {
 
         if (window.confirm("Do you want to cancel this Announcement ?")) {
             AnnouncementService.getAnnouncementById(e).then(res => {
-
                 let exsitingAnnouncement = res.data;
-
                 let announId = exsitingAnnouncement.announId;
-
-
-
                 let announStatus = 'Cancel'
                 let statusCd = 'I';
                 let announcement = { announId, announStatus, statusCd };
 
-                AnnouncementService.cancelAnnouncement(announcement).then(res => {
-                    AnnouncementService.getAnnouncementByPaging().then((res) => {
-                        setAnnouncements(res.data.responseData.content);
-                        console.log(res.data.responseData.content)
-                    });
-                    console.log("Announcement cancel");
+                const data = {
+                    currentPage,
+                    itemsPerPage,
+                    announcement
                 }
-                );
+
+                AnnouncementService.cancelAnnouncement(data).then(res => {
+                    AnnouncementService.getAnnouncementByPaging(data).then((res) => {
+                        if (res.data.success) {
+                            setIsSuccess(true);
+                            setAnnouncements(res.data.responseData.content);
+                            setDataPageable(res.data.responseData);
+                        }
+                        else {
+                            setResponseMessage(res.data.responseMessage)
+                            setIsSuccess(false);
+                        }
+                    }, [currentPage, itemsPerPage]);
+
+                });
             });
 
         } else {
             // User clicked Cancel
             console.log("User canceled the action.");
         }
-        setDeleteAnnountAlert(false)
 
     }
 
 
     const saveAnnouncement = (e) => {
         e.preventDefault()
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
         let statusCd = 'A';
         let announStatus = 'Pending'
         let employeeId = Cookies.get('empId');
@@ -212,43 +216,48 @@ export default function AnnouncementComponent() {
         let announCreatedByDesigName = Cookies.get('desigName')
 
         let announcement = { announTypeId, announStartDate, announEndDate, announCreatedByEmpId, announCreatedByEmpEId, announCreatedByEmpName, announCreatedByRoleId, announCreatedByRoleName, announCreatedByDeptId, announCreatedByDeptName, announCreatedByDesigId, announCreatedByDesigName, announVenue, announTitle, announDescription, announStatus, remark, statusCd, employeeId };
-        
-        AnnouncementService.saveAnnouncementDetails(announcement).then(res => {
 
-            AnnouncementService.getAnnouncementByPaging().then((res) => {
-                setAnnouncements(res.data.responseData.content);
-            });
-            setAnnounVenue('');
-         setAnnounTitle('');
-         setAnnounDescription('')
+        AnnouncementService.saveAnnouncementDetails(announcement).then(res => {
+            AnnouncementService.getAnnouncementByPaging(data).then((res) => {
+                if (res.data.success) {
+                    setIsSuccess(true);
+                    setAnnouncements(res.data.responseData.content);
+                    setDataPageable(res.data.responseData);
+                }
+                else {
+                    setResponseMessage(res.data.responseMessage)
+                    setIsSuccess(false);
+                }
+            }, [currentPage, itemsPerPage]);
         }
         );
-
-        setSaveAnnounAlert(false)
-
     }
 
 
     const clearSearchData = () => {
-
-        AnnouncementService.getAnnouncementByPaging().then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }
+        AnnouncementService.getAnnouncementByPaging(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setAnnouncements(res.data.responseData.content);
+                setDataPageable(res.data.responseData);
             }
             else {
+                setResponseMessage(res.data.responseMessage)
                 setIsSuccess(false);
             }
 
-        });
+        }, [currentPage, itemsPerPage]);
 
     }
     return (
-        <React.Fragment>
 
+        <div>
             <div className="row">
                 <h2 className="text-center">Announcement List</h2>
-
                 <div className="col-md-12">
                     <div className="row">
                         <div className="col-sm-11" align="right">
@@ -268,13 +277,10 @@ export default function AnnouncementComponent() {
                                         <th className="text-center">Organiser Name</th>
                                         <th className="text-center">Organiser Department</th>
                                         <th className="text-center">Organiser Designation</th>
-
                                         <th className="text-center">Start DateTime</th>
                                         <th className="text-center">End DateTime</th>
                                         <th className="text-center">Announcement Venue</th>
                                         <th className="text-center">Announcement Title</th>
-
-
                                         <th className="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -288,12 +294,10 @@ export default function AnnouncementComponent() {
                                                     <td>{announcement.announCreatedByEmpName}</td>
                                                     <td>{announcement.announCreatedByDeptName}</td>
                                                     <td>{announcement.announCreatedByDesigName}</td>
-
                                                     <td>{announcement.announStartDate}</td>
                                                     <td>{announcement.announEndDate}</td>
                                                     <td>{announcement.announVenue}</td>
                                                     <td>{announcement.announTitle}</td>
-
                                                     <td>
 
                                                         <button type="submit" className="btn col-sm-offset-1 btn-success" data-toggle="modal" data-target="#showData" onClick={() => showAnnouncementById(announcement.announId)}>View</button>
@@ -303,12 +307,16 @@ export default function AnnouncementComponent() {
                                     }
                                 </tbody>
                             </table>
-                            : <h1>No Data Found</h1>}
+                            : <h1>{responseMessage}</h1>}
+                        <PaginationComponent
+                            currentPage={currentPage}
+                            totalPages={dataPageable.totalPages || 10}
+                            onPageChange={handlePageChange}
+                            onItemsPerPageChange={handleItemsPerPageChange}
+                        />
                     </div>
 
                 </div>
-
-
 
                 {/* Modal for Advance search for employe comlaint details */}
                 <div className="modal fade" id="advanceSearchEmployee" role="dialog">
@@ -340,10 +348,6 @@ export default function AnnouncementComponent() {
                                             </div>
                                         </div>
 
-
-
-
-
                                         <div className="row">
                                             <label className="control-label col-sm-4" htmlFor="regionName">Announcement Type Name:</label>
                                             <div className="col-sm-5">
@@ -356,14 +360,10 @@ export default function AnnouncementComponent() {
                                                                     <option key={announType.announTypeId} value={announType.announTypeId}>{announType.announTypeName}</option>
                                                             )
                                                         };
-
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
-
-
-
 
                                         <div className="row">
                                             <label className="control-label col-sm-4" htmlFor="companyName">Announcement Status:</label>
@@ -381,15 +381,9 @@ export default function AnnouncementComponent() {
                                         </div>
                                     </div>
 
-
-
                                 </div>
                                 <div className="modal-footer">
-
                                     <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={(e) => advSearchAnnouncement(e)}>Search</button>
-
-
-
                                     <button type="button" className="btn btn-danger  col-sm-offset-1" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
@@ -409,12 +403,10 @@ export default function AnnouncementComponent() {
                             </div>
                             <div className="modal-body">
                                 <form className="form-horizontal">
-
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName">Select Announcement Type:</label>
                                         <div className="col-sm-4">
                                             <select className="form-control" id="announTypeId" onChange={(e) => setAnnounTypeId(e.target.value)}>
-
                                                 {
                                                     announTypes.map(
                                                         announType =>
@@ -430,40 +422,29 @@ export default function AnnouncementComponent() {
                                         <label className="control-label col-sm-4" htmlFor="deptName">Announcement Start Date Time:</label>
                                         <div className="col-sm-4">
                                             <input type="datetime-local" className="form-control" defaultValue={announStartDate} name="announStartDate" onChange={(e) => setAnnounStartDate(e.target.value)} />
-
                                         </div>
                                     </div>
-
 
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Announcement End Date Time:</label>
                                         <div className="col-sm-4">
                                             <input type="datetime-local" className="form-control" id="announEndDate" defaultValue={announEndDate} name="announ" onChange={(e) => setAnnounEndDate(e.target.value)} />
-
                                         </div>
                                     </div>
-
 
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Location:</label>
                                         <div className="col-sm-8">
                                             <textarea className="form-control" id="announVenue" placeholder="Enter  Location here" value={announVenue} onChange={(e) => setAnnounVenue(e.target.value)} />
-
                                         </div>
                                     </div>
-
-
-
-
 
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Title:</label>
                                         <div className="col-sm-8">
                                             <textarea className="form-control" id="announTitle" placeholder="Enter  Title here" value={announTitle} onChange={(e) => setAnnounTitle(e.target.value)} />
-
                                         </div>
                                     </div>
-
 
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Description:</label>
@@ -472,13 +453,10 @@ export default function AnnouncementComponent() {
 
                                         </div>
                                     </div>
-
-
-
                                 </form>
                             </div>
                             <div className="modal-footer">
-                                <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => setSaveAnnounAlert(true)} > Submit</button>
+                                <button type="submit" className="btn btn-success" data-dismiss="modal" onClick={(e) => saveAnnouncement(e)} > Submit</button>
                                 <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>
                         </div>
@@ -500,15 +478,12 @@ export default function AnnouncementComponent() {
                             <div className="modal-body">
                                 <form className="form-horizontal">
 
-
-
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Announcement Start Date Time:</label>
                                         <div className="col-sm-8">
                                             {announStartDate}
                                         </div>
                                     </div>
-
 
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Announcement End Date Time:</label>
@@ -524,8 +499,6 @@ export default function AnnouncementComponent() {
                                         </div>
                                     </div>
 
-
-
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Organiser Employee Id:</label>
                                         <div className="col-sm-8">
@@ -540,8 +513,6 @@ export default function AnnouncementComponent() {
                                         </div>
                                     </div>
 
-
-
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Organiser Designation:</label>
                                         <div className="col-sm-8">
@@ -549,19 +520,12 @@ export default function AnnouncementComponent() {
                                         </div>
                                     </div>
 
-
-
-
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Location:</label>
                                         <div className="col-sm-8">
                                             {announVenue}
                                         </div>
                                     </div>
-
-
-
-
 
                                     <div className="form-group">
                                         <label className="control-label col-sm-4" htmlFor="deptName" >Title:</label>
@@ -604,30 +568,6 @@ export default function AnnouncementComponent() {
                     </div>
                 </div>
             </div>
-            
-            {saveAnnounAlert && (
-                <AlertboxComponent
-                    show={saveAnnounAlert}
-                    title="danger"
-                    message="Do you want to save Announcement"
-                    onOk={saveAnnouncement}
-                    onClose={handleClose}
-                    isCancleAvailable={true}
-                />
-            )}
-
-             {deleteAnnounAlert && (
-                <AlertboxComponent
-                    show={deleteAnnounAlert}
-                    title="danger"
-                    message="Do you want to delete Announcement"
-                    onOk={cancelAnnouncement}
-                    onClose={handleClose}
-                    isCancleAvailable={true}
-                />
-            )}
-        </React.Fragment>
-
+        </div>
     );
-
 }

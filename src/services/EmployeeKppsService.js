@@ -39,10 +39,10 @@ class EmployeeKppsService {
 
 
     // view previous months kpp 
-    getEmployeeKppReportDetailsByPaging() {
+    getEmployeeKppReportDetailsByPaging(data) {
         if (null != Cookies.get('empId')) {
-
-            return axios.get(BASE_URL_API+`/cumulative/employee-kpp-cumulative?empId=${Cookies.get('empId')}`)
+            
+            return axios.get(BASE_URL_API+`/cumulative/employee-kpp-cumulative?empId=${Cookies.get('empId')}&page=${data.currentPage-1}&size=${data.itemsPerPage}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);
@@ -50,10 +50,10 @@ class EmployeeKppsService {
     }
 
     // view previous months kpp  bt from date and to date
-    getEmployeeKppReportByDates(fromDate, toDate) {
+    getEmployeeKppReportByDates(data) {
         if (null != Cookies.get('empId')) {
 
-            return axios.get(BASE_URL_API+`/cumulative/employee-kpp-cumulative?fromDate=${fromDate}&toDate=${toDate}&empId=${Cookies.get('empId')}&page=0&size=1200`)
+            return axios.get(BASE_URL_API+`/cumulative/employee-kpp-cumulative?fromDate=${data.fromDate}&toDate=${data.toDate}&empId=${Cookies.get('empId')}&page=${data.currentPage-1}&size=${data.itemsPerPage}`)
         } else {
             alert("You need to login first")
             window.location.replace(LOGIN_UI_BASE_URL);

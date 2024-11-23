@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import EmployeeKppsService from "../../services/EmployeeKppsService";
 import { BASE_URL_API } from "../../services/URLConstants";
+import PaginationComponent from '../PaginationComponent/PaginationComponent';
 export default function EmployeeCumulativeKppComponent() {
 
     const navigate = useNavigate();
@@ -19,19 +20,34 @@ export default function EmployeeCumulativeKppComponent() {
 
     const [employees, setEmployees] = useState([])
 
+    const [responseMessage, setResponseMessage] = useState('')   
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [dataPageable, setDataPageable] = useState([])
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        // Handle data fetching or any other logic here
+    };
+
+    // Handle items per page change
+    const handleItemsPerPageChange = (newItemsPerPage) => {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(1); // Reset to first page when items per page changes
+    };
+
     function clearDates(){
         document.getElementById("fromDate").value = "";
         document.getElementById("toDate").value = "";
     }
     const loadCumulativeData = ()=>{
-
-       
-
-        EmployeeKppsService.getEmployeeKppReportDetailsByPaging().then((res) => {
-
-
+        const data = {
+            currentPage,
+            itemsPerPage
+        }    
+        EmployeeKppsService.getEmployeeKppReportDetailsByPaging(data).then((res) => {
             if (res.data.success) {
-
                 setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
                 setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
@@ -39,31 +55,57 @@ export default function EmployeeCumulativeKppComponent() {
                 setCummulativeRatings(res.data.responseData.cummulativeRatings)
                 setTotalMonths(res.data.responseData.totalMonths)
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
-
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
             }
             else {
                 setIsSuccess(false);
-                alert("Kpp is not approved for month");
+                setResponseMessage(res.data.responseMessage)
+            }
 
+        }, [currentPage, itemsPerPage]).catch((err) => {
+            alert(err.response.data.details)
+        });
+    }
+
+    useEffect(() => {
+        const data = {
+            currentPage,
+            itemsPerPage
+        }    
+        EmployeeKppsService.getEmployeeKppReportDetailsByPaging(data).then((res) => {
+            if (res.data.success) {
+                setIsSuccess(true);
+                setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
+                setSumOfHodRatings(res.data.responseData.sumOfHodRatings)
+                setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
+                setCummulativeRatings(res.data.responseData.cummulativeRatings)
+                setTotalMonths(res.data.responseData.totalMonths)
+                setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
+                setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
+            }
+            else {
+                setIsSuccess(false);
+                setResponseMessage(res.data.responseMessage)
             }
 
         }).catch((err) => {
             alert(err.response.data.details)
         });
-
-
-    }
-
-    useEffect(() => {
-        loadCumulativeData();
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
 
 
 
     const getKPPDetailsByDate = (e) => {
-        EmployeeKppsService.getEmployeeKppReportByDates(fromDate, toDate).then((res) => {
+        const data = {
+            currentPage,
+            itemsPerPage,
+            fromDate, 
+            toDate
+        }   
+        EmployeeKppsService.getEmployeeKppReportByDates(data).then((res) => {
             if (res.data.success) {
                 setIsSuccess(true);
                 setSumOfEmployeeRatings(res.data.responseData.sumOfEmployeeRatings)
@@ -71,18 +113,14 @@ export default function EmployeeCumulativeKppComponent() {
                 setSumOfGMRatings(res.data.responseData.sumOfGMRatings)
                 setCummulativeRatings(res.data.responseData.cummulativeRatings)
                 setAvgCummulativeRatings(res.data.responseData.avgCummulativeRatings)
-                setTotalMonths(res.data.responseData.totalMonths)
-                
+                setTotalMonths(res.data.responseData.totalMonths)                
                 setEmployees(res.data.responseData.employeeKppStatusResponses.content);
+                setDataPageable(res.data.responseData);
             } else {
                 setIsSuccess(false);
-               // alert("Kpp is not found for month");
-
+                setResponseMessage(res.data.responseMessage)
             }
-
-
-        });
-
+        }, [currentPage, itemsPerPage]);
     }
 
     const YYYY_MM_DD_Formater = (date, format = 'YYYY-MM-DD') => {
@@ -97,7 +135,7 @@ export default function EmployeeCumulativeKppComponent() {
 
     return (
         <div className="row">
-            <h3 className="text-center">View KPP</h3>
+            <h3 className="text-center">View Employee Cumulative KPP</h3>
             <div className="form-group">
                 <form className="form-horizontal" enctype="multipart/form-data">
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
@@ -191,7 +229,13 @@ export default function EmployeeCumulativeKppComponent() {
                     </tbody>
 
                 </table>
-                :<h1>No Data Found</h1>}
+                : <h1>{responseMessage}</h1>}
+                <PaginationComponent
+                    currentPage={currentPage}
+                    totalPages={dataPageable.totalPages || 10}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                />
             </div>
 
 
