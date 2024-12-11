@@ -83,7 +83,7 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
 
     useEffect(() => {
         EmployeeKppsService.getKPPDetails().then((res) => {
-         if('null'!=res.data.ekppMonth){
+         if(null!=res.data.ekppMonth){
             setEkppMonth(YYYY_MM_DD_Formater(res.data.ekppMonth))
          } else{
             const newDate = new Date();           
