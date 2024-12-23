@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import React from "react";
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import ChangePasswordComponent from "./components/ChangePasswordComponent/ChangePasswordComponent";
-
+import OverallEmployeeKppFeedbackComponent from "./components/OverallKppFeedbackComponent/OverallEmployeeKppFeedbackComponent";
 
 import ViewProfileComponent from './components/ViewProfileComponent/ViewProfileComponent';
 import MyComplaintComponent from './components/ComplaintManagementComponent/MyComplaintComponent';
@@ -48,8 +48,8 @@ function App() {
               <span className="caret"></span></a>
             <ul className="dropdown-menu">
             <li><Link to="/employeekpp">Add KPP</Link></li>
-            <li><Link to="/viewKppReport">View Cumulative KPP</Link></li>
-
+            <li><Link to="/viewKppReport">View Monthly Cumulative KPP</Link></li>
+            <li><Link to="/overallHODKppFeedback">Add Yearly KPP Feedback</Link></li>
             </ul>
           </li>
 
@@ -85,6 +85,7 @@ function App() {
         <Route exact path="/" element={<EmplyeeKppRatingsComponent />}></Route>
         <Route exact path="/employeekpp" element={<EmplyeeKppRatingsComponent />}></Route>
         <Route exact path="/viewKppReport" element={<EmployeeCumulativeKppComponent />}></Route>
+        <Route exact path="/overallHODKppFeedback" element={<OverallEmployeeKppFeedbackComponent />}></Route>
         <Route exact path="/updateEmployeeProfile" element={<ViewProfileComponent />}></Route>
         <Route exact path="/changePassword" element={<ChangePasswordComponent />}></Route>
         <Route exact path="/myComplaint" element={<MyComplaintComponent />}></Route>
