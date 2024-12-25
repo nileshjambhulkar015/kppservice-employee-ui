@@ -47,7 +47,7 @@ function App() {
             <a className="dropdown-toggle" data-toggle="dropdown" href="#">KPP Management
               <span className="caret"></span></a>
             <ul className="dropdown-menu">
-            <li><Link to="/employeekpp">Add KPP</Link></li>
+            <li><Link to="/employeekpp">Add Current Month KPP</Link></li>
             <li><Link to="/viewKppReport">View Monthly Cumulative KPP</Link></li>
             <li><Link to="/overallHODKppFeedback">Add Yearly KPP Feedback</Link></li>
             </ul>

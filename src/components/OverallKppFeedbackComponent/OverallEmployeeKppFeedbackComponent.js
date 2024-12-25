@@ -230,7 +230,7 @@ const OverallEmployeeKppFeedbackComponent = () => {
 
                                     <thead>
                                         <tr>
-                                            <td colSpan={21} className="text-center"><h3>HOD KEY PERFORMANCE INDICATORS (KPIs) for FINANCIAL YEAR {finYear}</h3></td>
+                                            <td colSpan={21} className="text-center"><h3>EMPLOYEE KEY PERFORMANCE INDICATORS (KPIs) for FINANCIAL YEAR {finYear}</h3></td>
                                         </tr>
                                         <tr>
                                             <th rowSpan={2} className="text-center">Sr No</th>
@@ -246,6 +246,7 @@ const OverallEmployeeKppFeedbackComponent = () => {
                                             <th rowSpan={2} className="text-center">FIRST APPRIASEE OVERALL ACHIEVEMENT</th>
                                             <th rowSpan={2} className="text-center">FIRST APPRIASEE % OF TOTAL TASK COMPLETED</th>
 
+                                            <th rowSpan={2} className="text-center">Overall Employee KPP Feedback</th>
                                             <th rowSpan={2} className="text-center">Overall HOD KPP Feedback</th>
                                             <th rowSpan={2} className="text-center">Overall GM KPP Feedback</th>
 
@@ -290,9 +291,8 @@ const OverallEmployeeKppFeedbackComponent = () => {
 
 
                                                     </td>
-                                                    <td className='col-sm-4'>
-                                                        {kppResponse.gmKppFeedback}
-                                                    </td>
+                                                    <td className='text-center'>{kppResponse.hodKppFeedback}</td>
+                                                    <td className='text-center'>{kppResponse.gmKppFeedback}</td>
                                                 </tr>
                                         )}
                                         <tr className="text-justify">
@@ -335,6 +335,20 @@ const OverallEmployeeKppFeedbackComponent = () => {
                                     <label className="control-label col-sm-4" htmlFor="gmKppStatus">Training & Development Needs :</label>
                                     <div className="col-sm-6">
                                         <label htmlFor="empKppStatus">{kppMasterResponses?.empTrainginDevelopmentNeeds}</label>
+                                    </div>
+                                </div>
+
+                                    <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="gmKppStatus">Eligibility for promotion ( Department Head Comments) :</label>
+                                    <div className="col-sm-6">
+                                        <label htmlFor="empKppStatus">{kppMasterResponses?.hodRemark}</label>
+                                    </div>
+                                </div>
+
+                                    <div className="form-group">
+                                    <label className="control-label col-sm-4" htmlFor="gmKppStatus">Eligibility for Promotion ( Management Comments) :</label>
+                                    <div className="col-sm-6">
+                                        <label htmlFor="empKppStatus">{kppMasterResponses?.remark}</label>
                                     </div>
                                 </div>
 
