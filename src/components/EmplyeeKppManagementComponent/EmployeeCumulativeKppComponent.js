@@ -137,7 +137,7 @@ export default function EmployeeCumulativeKppComponent() {
         <div className="row">
             <h3 className="text-center">View Employee Cumulative KPP</h3>
             <div className="form-group">
-                <form className="form-horizontal" enctype="multipart/form-data">
+                <form className="form-horizontal" encType="multipart/form-data">
                     <label className="control-label col-sm-1" htmlFor="deptNameSearch"> From Date:</label>
 
                     <div className="col-sm-2">
