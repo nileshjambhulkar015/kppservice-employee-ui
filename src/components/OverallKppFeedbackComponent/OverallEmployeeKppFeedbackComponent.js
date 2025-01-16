@@ -110,10 +110,6 @@ const OverallEmployeeKppFeedbackComponent = () => {
 
     }, [finYear]);
 
-
-
-
-    console.log("kppDetailsResponses : ", kppDetailsResponses)
     return (
         <div className='container-fluid'>
             <div className="row">
@@ -136,15 +132,8 @@ const OverallEmployeeKppFeedbackComponent = () => {
                         let deptId = Cookies.get('deptId');
                         let desigId = Cookies.get('desigId');
 
-                        console.log("empId: ", empId)
-
-
-                        console.log("kppDetailsResponses : ", kppDetailsResponses)
-
-
                         const payload = { "kppUpdateRequests": values?.fields, "finYear": finYear, "empId": empId, "empEId": empEId, "roleId": roleId, "deptId": deptId, "desigId": desigId, "totalEmpAchivedWeight": totalEmpAchivedWeight, "totalEmpOverallAchieve": totalEmpOverallAchieve, "totalEmpOverallTaskComp": totalEmpOverallTaskComp, "hodEmpId": hodEmpId, "totalHodAchivedWeight": totalHodAchivedWeight, "totalHodOverallAchieve": totalHodOverallAchieve, "totalHodOverallTaskComp": totalHodOverallTaskComp, "gmEmpId": gmEmpId, "totalGmAchivedWeight": totalGmAchivedWeight, "totalGmOverallAchieve": totalGmOverallAchieve, "totalGmOverallTaskComp": totalGmOverallTaskComp, "avgTotalOverallRating": totalOverallRatings, "avgTotalOverallPer": totalOverallPercentage, ekppMonth, empKppStatus, empRemark, evidence };
 
-                        console.log("payload : ", payload)
                         OverallKppFeedbackService.saveEmployeeKppFeedbackDetails(payload).then(res => {
                             if (res.data.success) {
                                 alert(res.data.responseMessage);
@@ -205,7 +194,6 @@ const OverallEmployeeKppFeedbackComponent = () => {
 
                             setFieldValue("fields", kppDetailsResponses)
                         };
-                        console.log("values : ", values)
                         return (
                             <Form className="form-horizontal">
 

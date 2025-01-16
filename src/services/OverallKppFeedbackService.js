@@ -27,7 +27,7 @@ class OverallKppFeedbackService {
 
     //get kpp details for hod updating rating of employee
     getHODKPPDetailsYearly(finYear) {
-        console.log("finYear : ", finYear)
+
        
         if (null != Cookies.get('empId')) {
             return axios.get(BASE_URL_API+`/overall-kpp-feedback/yearly-kpp?empId=${Cookies.get('empId')}&finYear=${finYear}`)

@@ -78,7 +78,7 @@ class OthersResolveComplaintService {
     //advance search of employee
     advanceSearchComplaintDetails(data) {
         if (null != Cookies.get('empId')) {
-            console.log("Data ", data)
+
             return axios.post(BASE_URL_API+`/complaint/complaint-adv-search?page=${data.currentPage-1}&size=${data.itemsPerPage}`, data.advComplaintSearch)
         } else {
             alert("You need to login first")

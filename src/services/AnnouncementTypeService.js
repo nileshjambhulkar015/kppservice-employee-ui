@@ -29,7 +29,7 @@ saveAnnouncementTypeDetails(announcementType) {
 
 getAnnouncementTypeById(announTypeId) {
     if (null != Cookies.get('empId')) {
-        console.log("Inside service : ", announTypeId)
+
         return axios.get(BASE_URL + `/by-announcement-type-id?announTypeId=${announTypeId}`)
     } else {
         alert("You need to login first")

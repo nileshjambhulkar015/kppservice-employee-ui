@@ -29,7 +29,7 @@ class EmployeeKppsService {
 
     getEmployeeKPPReport(employeeId) {
         if (null != Cookies.get('empId')) {
-            console.log(employeeId)
+
             return axios.get(BASE_URL_API+`/report/employee-kpp-status?empId=${employeeId}`)
         } else {
             alert("You need to login first")

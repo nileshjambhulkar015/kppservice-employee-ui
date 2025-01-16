@@ -99,12 +99,11 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
 
         EmployeeKppsService.getEvidenceFileDetails(ekppMonth).then((res) => {
          
-            setEvidenceFileName(res.data.responseData.evFileName);
+            setEvidenceFileName(res.data.responseData?.evFileName);
          
         });
     }, []);
 
-    console.log("ekppMonth :", ekppMonth)
 
     const selectFile =  (e) => {
        setSelectedFile(e.target.files[0]);
@@ -164,7 +163,7 @@ const[evidenceFileName, setEvidenceFileName] = useState('')
                     onSubmit={(values) => {
                         let ekppStatus = "In-Progress";
                         let evidence = "evidence";
-                        console.log("values?.fields :", values?.fields)
+                
                         const payload = { "kppUpdateRequests": values?.fields, "totalAchivedWeightage": totalAchivedWeight, "totalOverAllAchive": totalOverAllAchive, "totalOverallTaskCompleted": totalOverallTaskComp,"totalOverallRatings":totalOverallRatings,"totalOverallPercentage":totalOverallPercentage, ekppMonth, ekppStatus, empRemark, evidence };
                         EmployeeKppsService.saveEmployeeKppDetails(payload).then(res => {
                             if (res.data.success) {

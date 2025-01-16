@@ -37,9 +37,7 @@ function App() {
     <BrowserRouter>
       <nav className="navbar navbar-inverse">
         <div className="container-fluid">
-          <div className="navbar-header">
-            <a className="navbar-brand" href="http://localhost:3008" onClick={() => removeCookies()}>FutureBizops</a>
-          </div>
+       
           <ul className="nav navbar-nav">
 
             
@@ -66,12 +64,16 @@ function App() {
           </li>
 
           <li><Link to="/announcement">Announcement Master</Link></li>
-            <li><Link to="/updateEmployeeProfile">View Profile</Link></li>
-            <li><Link to="/updateDOB">Update Date of Birth</Link></li>
-            <li><Link to="/changePassword">Change Password</Link></li>
 
-
-
+          <li className="dropdown">
+            <a className="dropdown-toggle" data-toggle="dropdown" href="#">Personal Profile
+              <span className="caret"></span></a>
+            <ul className="dropdown-menu">
+              <li><Link to="/updateEmployeeProfile">View Profile</Link></li>
+              <li><Link to="/updateDOB">Update Date of Birth</Link></li>
+              <li><Link to="/changePassword">Change Password</Link></li>
+            </ul>
+          </li>
           </ul>
 
           <ul className="nav navbar-nav navbar-right">

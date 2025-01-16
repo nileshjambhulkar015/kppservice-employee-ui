@@ -149,7 +149,6 @@ class ComplaintService {
 
     //Get all sites present in department table from designation for KPP
     ddComplaintTypeByDeptId(compTypeDeptId) {
-        console.log("Site Service regionid=", compTypeDeptId)
         if (null != Cookies.get('empId')) {
             return axios.get(BASE_URL_API + `/complaint-type/dd-comp-type-by-dept-id?compTypeDeptId=${compTypeDeptId}`)
         } else {
@@ -172,7 +171,7 @@ class ComplaintService {
        //advance search of employee
        advanceSearchComplaintDetails(data) {
         if (null != Cookies.get('empId')) {
-          console.log(data)
+
             return axios.post(BASE_URL_API+`/complaint/complaint-adv-search?page=${data.currentPage-1}&size=${data.itemsPerPage}`, data.advComplaintSearch)
         } else {
             alert("You need to login first")

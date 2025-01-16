@@ -132,7 +132,7 @@ export default function MeetingMasterComponent() {
          let meetCreatedByDesigName =  Cookies.get('desigName')
          
          let meeting = { meetStartDate, meetEndDate,meetCreatedByEmpId,meetCreatedByEmpEId,meetCreatedByEmpName,meetCreatedByRoleId,meetCreatedByRoleName,meetCreatedByDeptId,meetCreatedByDeptName,meetCreatedByDesigId,meetCreatedByDesigName,meetVenue,meetTitle,meetDescription,meetStatus, remark, statusCd,employeeId };
-        console.log("Meting", meeting)
+       
          MeetingMasterService.saveEmployeeMeetingDetails(meeting).then(res => {
             
             MeetingMasterService.getEmployeeMeetingByPaging().then((res) => {

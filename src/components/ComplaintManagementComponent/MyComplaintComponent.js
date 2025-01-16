@@ -91,7 +91,7 @@ export default function MyComplaintComponent() {
             setCompTypeDeptId(res.data?.[0]?.deptId)
 
             let compTypeDeptId = res.data?.[0]?.deptId;
-            // console.log("region id =", regionId)
+
             ComplaintService.ddComplaintTypeByDeptId(compTypeDeptId).then((res1) => {
                 setComplaintTypes(res1.data);
                 setCompTypeId(res1.data?.[0]?.compTypeId)
@@ -255,7 +255,7 @@ export default function MyComplaintComponent() {
                             setIsSuccess(false);
                         }
                     });
-                    console.log("Department deleted");
+                 
                 }
                 );
             }, [currentPage, itemsPerPage]);
@@ -276,7 +276,7 @@ export default function MyComplaintComponent() {
                 setComplaints(res.data.responseData.content);
 
             });
-            console.log("Complaint added");
+          
         }
         );
 
